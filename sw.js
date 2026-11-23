@@ -1,9 +1,9 @@
 /**
  * Service Worker for Tilezy PWA
- * 100% Offline Gameplay & Persistent Cache Strategy (v3.1)
+ * 100% Offline Gameplay & Persistent Cache Strategy (v3.2)
  */
 
-const CACHE_NAME = 'tilezy-pastel-v3.1';
+const CACHE_NAME = 'tilezy-pastel-v3.2';
 const CORE_ASSETS = [
   './',
   './index.html',

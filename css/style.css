@@ -27,8 +27,10 @@
   --plum-muted: #7E738A;
   --plum-light: #ECE8F0;
   --border-soft: #EAE3D9;
-  --mahjong-base: #86BFAE;
-  --tile-bg: #FFFFFF;
+  --mahjong-base: #C9BDB0;
+  --tile-bg: #FFFDF8;
+  --tile-border: #E8DFD3;
+  --tile-bevel: #C7BCAC;
   --font-game: 'Fredoka', 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -39,8 +41,10 @@ body.dark-mode {
   --plum-muted: #A399B0;
   --plum-light: #322A3B;
   --border-soft: #3D3348;
-  --tile-bg: #2B2435;
-  --mahjong-base: #527A70;
+  --tile-bg: #FFFDF8;
+  --tile-border: #DCD3C7;
+  --tile-bevel: #B8ABA0;
+  --mahjong-base: #B8ABA0;
 }
 
 * {
@@ -505,28 +509,29 @@ body.dark-mode::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: var(--cream-card);
   border-bottom: 2px solid var(--border-soft);
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .pastel-pill {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: var(--cream);
-  border: 2px solid var(--border-soft);
-  padding: 5px 12px;
-  border-radius: 12px; /* Agak kotak */
+  border: 1.5px solid var(--border-soft);
+  padding: 4px 10px;
+  border-radius: 10px;
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--plum);
+  white-space: nowrap;
 }
 
 .pastel-pill .icon {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .pastel-pill .val {
@@ -535,71 +540,85 @@ body.dark-mode::before {
 
 .btn-icon-soft {
   background: var(--cream);
-  border: 2px solid var(--border-soft);
+  border: 1.5px solid var(--border-soft);
   color: var(--plum);
-  border-radius: 12px; /* Agak kotak */
-  width: 38px;
-  height: 38px;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   transition: transform 0.08s;
+  flex-shrink: 0;
 }
 
 .btn-icon-soft:active {
   transform: translateY(2px);
 }
 
-/* Board Area */
+/* Board Area - Maximized responsive layout without clipping */
 .game-board-area {
   flex: 1;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 4px;
   overflow: hidden;
 }
 
 .game-board-card {
   position: relative;
   background: var(--cream-card);
-  border: 3px solid var(--border-soft);
-  border-radius: 18px; /* Agak kotak */
-  padding: 14px;
+  border: 2px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .game-grid {
   display: grid;
-  gap: 4px;
+  gap: 3px;
   position: relative;
   z-index: 2;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Mahjong Tiles */
+/* 3D Porcelain Mahjong Tiles */
 .tile {
   position: relative;
-  background: var(--tile-bg);
-  border: 2px solid var(--border-soft);
-  border-radius: 10px; /* Agak kotak */
-  border-bottom: 4px solid var(--mahjong-base);
+  background: #FFFDF8;
+  border: 1.5px solid #E8DFD3;
+  border-radius: 9px;
+  border-bottom: 3.5px solid #C7BCAC;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.1s ease, border-color 0.1s;
+  transition: transform 0.1s ease, border-color 0.1s, box-shadow 0.1s;
   will-change: transform, opacity;
 }
 
+body.dark-mode .tile {
+  background: #FFFDF8;
+  border: 1.5px solid #DCD3C7;
+  border-bottom: 3.5px solid #B8ABA0;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+
 .tile svg {
-  width: 76%;
-  height: 76%;
+  width: 82%;
+  height: 82%;
   pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
 }
 
 .tile:active {
@@ -613,15 +632,53 @@ body.dark-mode::before {
   background: transparent;
   border-color: transparent;
   border-bottom-color: transparent;
+  box-shadow: none;
 }
 
 .tile.selected {
-  background: var(--plum-light);
+  background: #FFF4EE;
   border-color: var(--coral);
   border-bottom-color: var(--coral-dark);
-  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 139, 123, 0.6);
+  transform: translateY(-2px) scale(1.05);
   z-index: 5;
   animation: tileSelectedBounce 0.8s infinite alternate;
+}
+
+body.dark-mode .tile.selected {
+  background: #FFF4EE;
+  border-color: var(--coral);
+  border-bottom-color: var(--coral-dark);
+  box-shadow: 0 0 12px rgba(255, 139, 123, 0.75);
+}
+
+@media (max-width: 480px) {
+  .game-top-bar {
+    padding: 4px 6px;
+    gap: 3px;
+  }
+  .pastel-pill {
+    padding: 4px 6px;
+    font-size: 0.74rem;
+    gap: 2.5px;
+  }
+  .pastel-pill .icon {
+    font-size: 0.85rem;
+  }
+  .btn-icon-soft {
+    width: 33px;
+    height: 33px;
+    font-size: 0.95rem;
+    border-radius: 9px;
+  }
+  .game-board-area {
+    padding: 2px;
+  }
+  .game-board-card {
+    padding: 4px;
+    border-width: 1.5px;
+    border-radius: 10px;
+  }
 }
 
 @keyframes tileSelectedBounce {

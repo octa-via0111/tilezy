@@ -156,168 +156,475 @@ const THEMES = {
     name: 'Hewan Lucu',
     badge: '🐾',
     icons: [
-      // 1. Dog
+      // 1. Domba Hijau Lucu (Green Fluffy Sheep)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="32" cy="34" rx="20" ry="18" fill="#FFD66B" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M14 22C10 28 11 38 16 40C18 38 18 32 17 25Z" fill="#FFA96B" stroke="currentColor" stroke-width="2"/>
-        <path d="M50 22C54 28 53 38 48 40C46 38 46 32 47 25Z" fill="#FFA96B" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="32" cy="39" rx="10" ry="7" fill="#FFFFFF"/>
-        <ellipse cx="32" cy="35" rx="3.5" ry="2.5" fill="currentColor"/>
-        <circle cx="24" cy="29" r="3" fill="currentColor"/>
-        <circle cx="40" cy="29" r="3" fill="currentColor"/>
+        <!-- Fluffy Wool Afro -->
+        <circle cx="20" cy="22" r="11" fill="#8FD347"/>
+        <circle cx="32" cy="15" r="12" fill="#9CE250"/>
+        <circle cx="44" cy="22" r="11" fill="#8FD347"/>
+        <circle cx="15" cy="34" r="10" fill="#83C93D"/>
+        <circle cx="49" cy="34" r="10" fill="#83C93D"/>
+        <circle cx="22" cy="46" r="10" fill="#75BA30"/>
+        <circle cx="34" cy="48" r="10" fill="#75BA30"/>
+        <circle cx="42" cy="46" r="10" fill="#75BA30"/>
+        <!-- Ears -->
+        <ellipse cx="11" cy="34" rx="7" ry="4" transform="rotate(-15 11 34)" fill="#FFAAA6"/>
+        <ellipse cx="11" cy="34" rx="4.5" ry="2" transform="rotate(-15 11 34)" fill="#FF7B89"/>
+        <ellipse cx="53" cy="34" rx="7" ry="4" transform="rotate(15 53 34)" fill="#FFAAA6"/>
+        <ellipse cx="53" cy="34" rx="4.5" ry="2" transform="rotate(15 53 34)" fill="#FF7B89"/>
+        <!-- Face -->
+        <circle cx="32" cy="35" r="16" fill="#FFE5D9"/>
+        <ellipse cx="23" cy="38" rx="3" ry="2" fill="#FFAAA6" opacity="0.6"/>
+        <ellipse cx="41" cy="38" rx="3" ry="2" fill="#FFAAA6" opacity="0.6"/>
+        <!-- Eyes -->
+        <ellipse cx="25" cy="33" rx="3.2" ry="4" fill="#242126"/>
+        <circle cx="24" cy="31.5" r="1.4" fill="#FFFFFF"/>
+        <circle cx="26.5" cy="34.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="39" cy="33" rx="3.2" ry="4" fill="#242126"/>
+        <circle cx="38" cy="31.5" r="1.4" fill="#FFFFFF"/>
+        <circle cx="40.5" cy="34.5" r="0.7" fill="#FFFFFF"/>
+        <!-- Nose & Smile -->
+        <ellipse cx="32" cy="38.5" rx="2" ry="1.4" fill="#FF8A8A"/>
+        <path d="M30 41C31 42.5 33 42.5 34 41" stroke="#874D43" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- Forehead Wool Curls -->
+        <circle cx="30" cy="23" r="4.5" fill="#B2EE6B"/>
+        <circle cx="36" cy="24" r="4" fill="#B2EE6B"/>
       </svg>`,
 
-      // 2. Cat
+      // 2. Berang-Berang Cokelat Gigi Kelinci (Cute Otter / Beaver with Buck Teeth)
       `<svg viewBox="0 0 64 64" fill="none">
-        <polygon points="16,18 24,26 14,30" fill="#FFA96B" stroke="currentColor" stroke-width="2"/>
-        <polygon points="48,18 40,26 50,30" fill="#FFA96B" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="35" r="18" fill="#FFA96B" stroke="currentColor" stroke-width="2.5"/>
-        <polygon points="32,38 29,35 35,35" fill="#FF8B7B"/>
-        <circle cx="24" cy="32" r="3" fill="#9CD9C8" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="40" cy="32" r="3" fill="#9CD9C8" stroke="currentColor" stroke-width="1.5"/>
+        <!-- Ears -->
+        <circle cx="17" cy="18" r="6" fill="#693B20"/>
+        <circle cx="17" cy="18" r="3.5" fill="#FFE5D4"/>
+        <circle cx="47" cy="18" r="6" fill="#693B20"/>
+        <circle cx="47" cy="18" r="3.5" fill="#FFE5D4"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="34" rx="20" ry="19" fill="#8F5635"/>
+        <!-- Chubby Cream Muzzle -->
+        <ellipse cx="32" cy="41" rx="14" ry="10" fill="#FFF0DE"/>
+        <!-- Buck Teeth -->
+        <rect x="29" y="44" width="2.8" height="4.5" rx="1" fill="#FFFFFF" stroke="#8F5635" stroke-width="0.8"/>
+        <rect x="32.2" y="44" width="2.8" height="4.5" rx="1" fill="#FFFFFF" stroke="#8F5635" stroke-width="0.8"/>
+        <!-- Nose -->
+        <ellipse cx="32" cy="38" rx="4" ry="2.6" fill="#301A10"/>
+        <ellipse cx="31" cy="37.2" rx="1.5" ry="0.8" fill="#FFFFFF" opacity="0.6"/>
+        <!-- Mouth Line -->
+        <path d="M28 42C29.5 43.5 31.5 43.5 32 42C32.5 43.5 34.5 43.5 36 42" stroke="#693B20" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="23" cy="30" rx="3.5" ry="4.2" fill="#211510"/>
+        <circle cx="21.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="24.2" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="30" rx="3.5" ry="4.2" fill="#211510"/>
+        <circle cx="39.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="42.2" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <!-- Whisker Dots -->
+        <circle cx="25" cy="41" r="0.8" fill="#B38063"/>
+        <circle cx="23" cy="43" r="0.8" fill="#B38063"/>
+        <circle cx="39" cy="41" r="0.8" fill="#B38063"/>
+        <circle cx="41" cy="43" r="0.8" fill="#B38063"/>
       </svg>`,
 
-      // 3. Panda
+      // 3. Rusa Manis Mata Bintang (Sweet Anime Deer / Fawn)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="16" cy="20" r="7.5" fill="currentColor"/>
-        <circle cx="48" cy="20" r="7.5" fill="currentColor"/>
-        <circle cx="32" cy="36" r="18" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
-        <ellipse cx="24" cy="33" rx="5" ry="4" transform="rotate(-15 24 33)" fill="currentColor"/>
-        <ellipse cx="40" cy="33" rx="5" ry="4" transform="rotate(15 40 33)" fill="currentColor"/>
-        <circle cx="24" cy="32" r="1.8" fill="#FFFFFF"/>
-        <circle cx="40" cy="32" r="1.8" fill="#FFFFFF"/>
-        <ellipse cx="32" cy="40" rx="3.5" ry="2.5" fill="currentColor"/>
+        <!-- Antlers -->
+        <path d="M22 19L19 11M20 15L16 14" stroke="#804F2E" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M42 19L45 11M44 15L48 14" stroke="#804F2E" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Ears -->
+        <ellipse cx="14" cy="25" rx="8" ry="4.5" transform="rotate(-30 14 25)" fill="#D48D55"/>
+        <ellipse cx="14" cy="25" rx="5" ry="2.5" transform="rotate(-30 14 25)" fill="#FFAFA8"/>
+        <ellipse cx="50" cy="25" rx="8" ry="4.5" transform="rotate(30 50 25)" fill="#D48D55"/>
+        <ellipse cx="50" cy="25" rx="5" ry="2.5" transform="rotate(30 50 25)" fill="#FFAFA8"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="36" rx="18" ry="17" fill="#D48D55"/>
+        <!-- Cream Eye Patches & Snout -->
+        <ellipse cx="23" cy="34" rx="7" ry="8" fill="#FFF5EB"/>
+        <ellipse cx="41" cy="34" rx="7" ry="8" fill="#FFF5EB"/>
+        <ellipse cx="32" cy="42" rx="8" ry="6" fill="#FFF5EB"/>
+        <!-- Big Sparkle Anime Eyes -->
+        <ellipse cx="24" cy="34" rx="4.5" ry="5.5" fill="#241812"/>
+        <circle cx="22.5" cy="32" r="2" fill="#FFFFFF"/>
+        <circle cx="25.5" cy="36.5" r="1.1" fill="#FFFFFF"/>
+        <circle cx="22" cy="36.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="40" cy="34" rx="4.5" ry="5.5" fill="#241812"/>
+        <circle cx="38.5" cy="32" r="2" fill="#FFFFFF"/>
+        <circle cx="41.5" cy="36.5" r="1.1" fill="#FFFFFF"/>
+        <circle cx="38" cy="36.5" r="0.7" fill="#FFFFFF"/>
+        <!-- Nose & Smile -->
+        <ellipse cx="32" cy="40.5" rx="2.5" ry="1.8" fill="#361D13"/>
+        <path d="M30.5 43.5C31.5 44.5 32.5 44.5 33.5 43.5" stroke="#7A4526" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- White Spots on Forehead -->
+        <circle cx="32" cy="24" r="1.3" fill="#FFFFFF" opacity="0.9"/>
+        <circle cx="29" cy="26" r="1" fill="#FFFFFF" opacity="0.9"/>
+        <circle cx="35" cy="26" r="1" fill="#FFFFFF" opacity="0.9"/>
       </svg>`,
 
-      // 4. Frog
+      // 4. Rubah Merah Ceria (Bright Red Fox)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="20" cy="22" r="8.5" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
-        <circle cx="44" cy="22" r="8.5" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
-        <circle cx="20" cy="21" r="5.5" fill="#FFFFFF"/>
-        <circle cx="44" cy="21" r="5.5" fill="#FFFFFF"/>
-        <circle cx="20" cy="21" r="3" fill="currentColor"/>
-        <circle cx="44" cy="21" r="3" fill="currentColor"/>
-        <ellipse cx="32" cy="38" rx="20" ry="15" fill="#9CD9C8" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M25 38C28 42 36 42 39 38" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Tall Fox Ears -->
+        <polygon points="12,32 17,10 27,24" fill="#FF5E36"/>
+        <polygon points="15,28 18,14 25,24" fill="#291A18"/>
+        <polygon points="17,26 19,17 24,24" fill="#FFB0BD"/>
+        <polygon points="52,32 47,10 37,24" fill="#FF5E36"/>
+        <polygon points="49,28 46,14 39,24" fill="#291A18"/>
+        <polygon points="47,26 45,17 40,24" fill="#FFB0BD"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="36" rx="19" ry="16" fill="#FF5E36"/>
+        <!-- Fluffy White Cheeks -->
+        <path d="M14 36C14 46 25 48 32 49C39 48 50 46 50 36C50 31 43 32 38 35C35 37 33 40 32 40C31 40 29 37 26 35C21 32 14 31 14 36Z" fill="#FFFDF8"/>
+        <!-- Fox Eyes -->
+        <ellipse cx="23" cy="33" rx="3.5" ry="3.8" transform="rotate(-10 23 33)" fill="#201715"/>
+        <circle cx="22" cy="31.8" r="1.4" fill="#FFFFFF"/>
+        <circle cx="24.2" cy="34" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="33" rx="3.5" ry="3.8" transform="rotate(10 41 33)" fill="#201715"/>
+        <circle cx="40" cy="31.8" r="1.4" fill="#FFFFFF"/>
+        <circle cx="42.2" cy="34" r="0.7" fill="#FFFFFF"/>
+        <!-- Shiny Black Fox Nose -->
+        <ellipse cx="32" cy="43" rx="2.8" ry="2" fill="#201715"/>
+        <ellipse cx="31.2" cy="42.3" rx="1.2" ry="0.6" fill="#FFFFFF" opacity="0.7"/>
+        <path d="M30.5 45.5C31.5 46.5 32.5 46.5 33.5 45.5" stroke="#402018" stroke-width="1.3" stroke-linecap="round"/>
       </svg>`,
 
-      // 5. Bear
+      // 5. Zebra Loreng Belang (Striped Safari Zebra)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="16" cy="20" r="7" fill="#B3806D" stroke="currentColor" stroke-width="2"/>
-        <circle cx="48" cy="20" r="7" fill="#B3806D" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="36" r="18" fill="#C4927F" stroke="currentColor" stroke-width="2.5"/>
-        <ellipse cx="32" cy="41" rx="10" ry="7" fill="#FFF8EF"/>
-        <ellipse cx="32" cy="37" rx="4" ry="2.8" fill="currentColor"/>
-        <circle cx="23" cy="31" r="2.8" fill="currentColor"/>
-        <circle cx="41" cy="31" r="2.8" fill="currentColor"/>
+        <!-- Ears -->
+        <ellipse cx="20" cy="16" rx="5" ry="8" transform="rotate(-15 20 16)" fill="#FFFDF8" stroke="#2B2633" stroke-width="1.5"/>
+        <ellipse cx="20" cy="16" rx="2.5" ry="5" transform="rotate(-15 20 16)" fill="#FFAFA8"/>
+        <ellipse cx="44" cy="16" rx="5" ry="8" transform="rotate(15 44 16)" fill="#FFFDF8" stroke="#2B2633" stroke-width="1.5"/>
+        <ellipse cx="44" cy="16" rx="2.5" ry="5" transform="rotate(15 44 16)" fill="#FFAFA8"/>
+        <!-- Mane Mohawk -->
+        <path d="M30 11C30 8 34 8 34 11L33 22H31L30 11Z" fill="#2B2633"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="34" rx="18" ry="18" fill="#FFFDF8"/>
+        <!-- Zebra Stripes -->
+        <path d="M32 18L32 26" stroke="#2B2633" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M24 20L28 25" stroke="#2B2633" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M40 20L36 25" stroke="#2B2633" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M15 31C18 31 22 33 24 35" stroke="#2B2633" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M49 31C46 31 42 33 40 35" stroke="#2B2633" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M16 38C20 38 23 40 24 42" stroke="#2B2633" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M48 38C44 38 41 40 40 42" stroke="#2B2633" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Muzzle -->
+        <ellipse cx="32" cy="44" rx="11" ry="7" fill="#8C8494"/>
+        <ellipse cx="28.5" cy="43.5" rx="1.5" ry="1" fill="#2B2633"/>
+        <ellipse cx="35.5" cy="43.5" rx="1.5" ry="1" fill="#2B2633"/>
+        <path d="M30 46.5C31.2 47.5 32.8 47.5 34 46.5" stroke="#2B2633" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="25" cy="31" rx="3.2" ry="4" fill="#2B2633"/>
+        <circle cx="23.8" cy="29.5" r="1.4" fill="#FFFFFF"/>
+        <ellipse cx="39" cy="31" rx="3.2" ry="4" fill="#2B2633"/>
+        <circle cx="37.8" cy="29.5" r="1.4" fill="#FFFFFF"/>
       </svg>`,
 
-      // 6. Bunny
+      // 6. Ayam Jago / Hen Jengger Merah (Colorful Rooster / Chicken)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="22" cy="18" rx="5.5" ry="12" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="22" cy="18" rx="3" ry="9" fill="#FFB3A8"/>
-        <ellipse cx="42" cy="18" rx="5.5" ry="12" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="42" cy="18" rx="3" ry="9" fill="#FFB3A8"/>
-        <circle cx="32" cy="38" r="17" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="24" cy="36" r="2.8" fill="currentColor"/>
-        <circle cx="40" cy="36" r="2.8" fill="currentColor"/>
-        <polygon points="32,41 29,39 35,39" fill="#FF8B7B"/>
+        <!-- Bright Red Crown / Comb -->
+        <circle cx="27" cy="16" r="5" fill="#FF3848"/>
+        <circle cx="34" cy="13" r="6" fill="#FF3848"/>
+        <circle cx="41" cy="17" r="4.5" fill="#FF3848"/>
+        <!-- Body / Neck Collar (Sky Blue) -->
+        <ellipse cx="32" cy="46" rx="14" ry="9" fill="#58A8E8"/>
+        <!-- Head -->
+        <circle cx="32" cy="32" r="16" fill="#FFFDF8"/>
+        <!-- Red Wattle below beak -->
+        <ellipse cx="30" cy="44" rx="2.5" ry="4" fill="#FF3848"/>
+        <ellipse cx="34" cy="44" rx="2.5" ry="4" fill="#FF3848"/>
+        <!-- Golden Beak -->
+        <polygon points="26,35 38,35 32,43" fill="#FFA928"/>
+        <polygon points="28,35 36,35 32,38" fill="#FF8D10"/>
+        <!-- Eyes -->
+        <ellipse cx="23" cy="30" rx="3.2" ry="3.8" fill="#241F28"/>
+        <circle cx="22" cy="28.8" r="1.4" fill="#FFFFFF"/>
+        <circle cx="24" cy="31.2" r="0.6" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="30" rx="3.2" ry="3.8" fill="#241F28"/>
+        <circle cx="40" cy="28.8" r="1.4" fill="#FFFFFF"/>
+        <circle cx="42" cy="31.2" r="0.6" fill="#FFFFFF"/>
+        <!-- Rosy Cheeks -->
+        <circle cx="20" cy="35" r="2.5" fill="#FFAAA6" opacity="0.6"/>
+        <circle cx="44" cy="35" r="2.5" fill="#FFAAA6" opacity="0.6"/>
       </svg>`,
 
-      // 7. Pig
+      // 7. Kelinci Lilac Imut (Lilac Lavender Bunny)
       `<svg viewBox="0 0 64 64" fill="none">
-        <polygon points="14,24 20,18 22,26" fill="#FFB3A8" stroke="currentColor" stroke-width="2"/>
-        <polygon points="50,24 44,18 42,26" fill="#FFB3A8" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="36" r="18" fill="#FFB3A8" stroke="currentColor" stroke-width="2.5"/>
-        <ellipse cx="32" cy="40" rx="8" ry="5.5" fill="#FF8B7B" stroke="currentColor" stroke-width="2"/>
-        <circle cx="29" cy="40" r="1.5" fill="currentColor"/>
-        <circle cx="35" cy="40" r="1.5" fill="currentColor"/>
-        <circle cx="23" cy="32" r="2.8" fill="currentColor"/>
-        <circle cx="41" cy="32" r="2.8" fill="currentColor"/>
+        <!-- Tall Bunny Ears -->
+        <ellipse cx="21" cy="18" rx="6" ry="13" transform="rotate(-8 21 18)" fill="#A99CF0"/>
+        <ellipse cx="21" cy="18" rx="3.2" ry="9.5" transform="rotate(-8 21 18)" fill="#FFCAD4"/>
+        <ellipse cx="43" cy="18" rx="6" ry="13" transform="rotate(8 43 18)" fill="#A99CF0"/>
+        <ellipse cx="43" cy="18" rx="3.2" ry="9.5" transform="rotate(8 43 18)" fill="#FFCAD4"/>
+        <!-- Head -->
+        <circle cx="32" cy="36" r="18" fill="#A99CF0"/>
+        <!-- Chubby White Cheeks -->
+        <ellipse cx="26" cy="41" rx="8" ry="6" fill="#FFFDF8"/>
+        <ellipse cx="38" cy="41" rx="8" ry="6" fill="#FFFDF8"/>
+        <!-- Eyes -->
+        <ellipse cx="23" cy="32" rx="3.5" ry="4.2" fill="#241D30"/>
+        <circle cx="21.8" cy="30.5" r="1.6" fill="#FFFFFF"/>
+        <circle cx="24.2" cy="33.8" r="0.8" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="32" rx="3.5" ry="4.2" fill="#241D30"/>
+        <circle cx="39.8" cy="30.5" r="1.6" fill="#FFFFFF"/>
+        <circle cx="42.2" cy="33.8" r="0.8" fill="#FFFFFF"/>
+        <!-- Pink Bunny Nose & Mouth -->
+        <polygon points="32,38 29.5,35.5 34.5,35.5" fill="#FF7B90"/>
+        <path d="M29.5 40C31 41.5 32 41.5 32 39.5C32 41.5 33 41.5 34.5 40" stroke="#7A6894" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- Whiskers -->
+        <line x1="14" y1="39" x2="20" y2="40" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="14" y1="42" x2="20" y2="42" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="50" y1="39" x2="44" y2="40" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="50" y1="42" x2="44" y2="42" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
       </svg>`,
 
-      // 8. Chick
+      // 8. Anak Anjing Lidah Menjulur (Happy Puppy with Sticking Tongue)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="32" cy="35" r="18" fill="#FFD66B" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="23" cy="31" r="2.8" fill="currentColor"/>
-        <circle cx="41" cy="31" r="2.8" fill="currentColor"/>
-        <polygon points="32,34 27,39 37,39" fill="#FF8B7B" stroke="currentColor" stroke-width="1.8"/>
+        <!-- Floppy Ears -->
+        <path d="M16 22C11 25 10 37 15 42C18 39 18 32 17 24Z" fill="#754425"/>
+        <path d="M48 22C53 25 54 37 49 42C46 39 46 32 47 24Z" fill="#754425"/>
+        <!-- Head -->
+        <circle cx="32" cy="34" r="18" fill="#9E6845"/>
+        <!-- White Blaze down muzzle -->
+        <path d="M30 18C30 16 34 16 34 18L37 32C42 33 45 37 45 42C45 47 39 49 32 49C25 49 19 47 19 42C19 37 22 33 27 32L30 18Z" fill="#FFF8EE"/>
+        <!-- Eyes -->
+        <ellipse cx="24" cy="30" rx="3.5" ry="4" fill="#261710"/>
+        <circle cx="22.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="25" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="40" cy="30" rx="3.5" ry="4" fill="#261710"/>
+        <circle cx="38.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="41" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <!-- Glossy Black Nose -->
+        <ellipse cx="32" cy="38" rx="3.8" ry="2.6" fill="#201511"/>
+        <ellipse cx="31" cy="37.2" rx="1.3" ry="0.7" fill="#FFFFFF" opacity="0.6"/>
+        <!-- Panting Pink Tongue Sticking Out -->
+        <ellipse cx="35" cy="46" rx="3" ry="4" fill="#FF6B82"/>
+        <line x1="35" y1="43" x2="35" y2="47" stroke="#D93E58" stroke-width="0.8"/>
+        <!-- Mouth Line -->
+        <path d="M28 41C30 42.5 32 42.5 32 41C32 42.5 34 42.5 36 41" stroke="#754425" stroke-width="1.4" stroke-linecap="round"/>
       </svg>`,
 
-      // 9. Koala
+      // 9. Anak Gajah Biru Belalai Melengkung (Sky Blue Baby Elephant with Trunk & Tusks)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="14" cy="26" r="8" fill="#B9ACF5" stroke="currentColor" stroke-width="2"/>
-        <circle cx="50" cy="26" r="8" fill="#B9ACF5" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="37" r="17" fill="#E5E0FA" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="23" cy="32" r="2.8" fill="currentColor"/>
-        <circle cx="41" cy="32" r="2.8" fill="currentColor"/>
-        <ellipse cx="32" cy="39" rx="4" ry="6" fill="currentColor"/>
+        <!-- Big Round Flapping Ears -->
+        <circle cx="15" cy="34" r="11" fill="#5FB3F5"/>
+        <circle cx="15" cy="34" r="7" fill="#FFAFC2"/>
+        <circle cx="49" cy="34" r="11" fill="#5FB3F5"/>
+        <circle cx="49" cy="34" r="7" fill="#FFAFC2"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="34" rx="18" ry="17" fill="#6EC1FA"/>
+        <!-- Tusks -->
+        <path d="M26 42C24 44 24 47 26 48C28 47 28 44 27 42" fill="#FFFFFF"/>
+        <path d="M38 42C40 44 40 47 38 48C36 47 36 44 37 42" fill="#FFFFFF"/>
+        <!-- Curled Trunk -->
+        <path d="M30 33C30 38 29 44 32 46C35 48 38 46 38 42C38 39 35 39 34 41" stroke="#4B9FE0" stroke-width="4.5" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="23" cy="29" rx="3.2" ry="4" fill="#1C2C3D"/>
+        <circle cx="21.8" cy="27.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="24" cy="30.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="29" rx="3.2" ry="4" fill="#1C2C3D"/>
+        <circle cx="39.8" cy="27.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="42" cy="30.5" r="0.7" fill="#FFFFFF"/>
+        <!-- Rosy Blush -->
+        <ellipse cx="20" cy="35" rx="2.5" ry="1.5" fill="#FFAEB9" opacity="0.7"/>
+        <ellipse cx="44" cy="35" rx="2.5" ry="1.5" fill="#FFAEB9" opacity="0.7"/>
       </svg>`,
 
-      // 10. Penguin
+      // 10. Singa Berbulu Lebat (Fluffy Smiling Lion)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="32" cy="36" rx="18" ry="19" fill="currentColor"/>
-        <ellipse cx="32" cy="38" rx="12" ry="14" fill="#FFFFFF"/>
-        <circle cx="25" cy="30" r="2.8" fill="currentColor"/>
-        <circle cx="39" cy="30" r="2.8" fill="currentColor"/>
-        <polygon points="32,33 28,37 36,37" fill="#FFD66B"/>
+        <!-- Huge Fluffy Orange Mane -->
+        <circle cx="20" cy="20" r="9" fill="#FF8726"/>
+        <circle cx="32" cy="14" r="10" fill="#FF9238"/>
+        <circle cx="44" cy="20" r="9" fill="#FF8726"/>
+        <circle cx="14" cy="33" r="9" fill="#E86E10"/>
+        <circle cx="50" cy="33" r="9" fill="#E86E10"/>
+        <circle cx="20" cy="46" r="9" fill="#D65F05"/>
+        <circle cx="32" cy="50" r="10" fill="#D65F05"/>
+        <circle cx="44" cy="46" r="9" fill="#D65F05"/>
+        <!-- Ears -->
+        <circle cx="20" cy="22" r="5" fill="#FFAA33"/>
+        <circle cx="20" cy="22" r="2.8" fill="#753C12"/>
+        <circle cx="44" cy="22" r="5" fill="#FFAA33"/>
+        <circle cx="44" cy="22" r="2.8" fill="#753C12"/>
+        <!-- Golden Face -->
+        <circle cx="32" cy="35" r="16" fill="#FFD166"/>
+        <!-- Cream Snout -->
+        <ellipse cx="32" cy="41" rx="8" ry="5.5" fill="#FFF4D6"/>
+        <!-- Nose & Smile -->
+        <polygon points="32,39 29.5,36.5 34.5,36.5" fill="#693714"/>
+        <path d="M29.5 42C30.8 43.5 32 43.5 32 41C32 43.5 33.2 43.5 34.5 42" stroke="#693714" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="25" cy="31" rx="3.2" ry="4" fill="#2B1A0E"/>
+        <circle cx="24" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="26" cy="32.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="39" cy="31" rx="3.2" ry="4" fill="#2B1A0E"/>
+        <circle cx="38" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="40" cy="32.5" r="0.7" fill="#FFFFFF"/>
       </svg>`,
 
-      // 11. Monkey
+      // 11. Jerapah Bintik Manis (Giraffe with Cute Spots & Horns)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="14" cy="34" r="6.5" fill="#B3806D" stroke="currentColor" stroke-width="2"/>
-        <circle cx="50" cy="34" r="6.5" fill="#B3806D" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="35" r="17" fill="#B3806D" stroke="currentColor" stroke-width="2.5"/>
-        <ellipse cx="26" cy="30" rx="7" ry="6" fill="#FFF8EF"/>
-        <ellipse cx="38" cy="30" rx="7" ry="6" fill="#FFF8EF"/>
-        <circle cx="26" cy="30" r="2.5" fill="currentColor"/>
-        <circle cx="38" cy="30" r="2.5" fill="currentColor"/>
-        <ellipse cx="32" cy="41" rx="11" ry="7" fill="#FFF8EF"/>
+        <!-- Knobby Horns (Ossicones) -->
+        <line x1="26" y1="20" x2="23" y2="10" stroke="#8A4A1C" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="23" cy="10" r="3" fill="#63310F"/>
+        <line x1="38" y1="20" x2="41" y2="10" stroke="#8A4A1C" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="41" cy="10" r="3" fill="#63310F"/>
+        <!-- Ears -->
+        <ellipse cx="14" cy="26" rx="7" ry="3.5" transform="rotate(-25 14 26)" fill="#FFD242"/>
+        <ellipse cx="14" cy="26" rx="4" ry="2" transform="rotate(-25 14 26)" fill="#FFAFA8"/>
+        <ellipse cx="50" cy="26" rx="7" ry="3.5" transform="rotate(25 50 26)" fill="#FFD242"/>
+        <ellipse cx="50" cy="26" rx="4" ry="2" transform="rotate(25 50 26)" fill="#FFAFA8"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="36" rx="17" ry="18" fill="#FFD242"/>
+        <!-- Brown Spots -->
+        <circle cx="22" cy="25" r="3.2" fill="#B86826"/>
+        <circle cx="42" cy="25" r="3.2" fill="#B86826"/>
+        <circle cx="32" cy="22" r="2.5" fill="#B86826"/>
+        <circle cx="18" cy="35" r="2.8" fill="#B86826"/>
+        <circle cx="46" cy="35" r="2.8" fill="#B86826"/>
+        <!-- Cream Snout -->
+        <ellipse cx="32" cy="44" rx="10" ry="7.5" fill="#FFF3D9"/>
+        <ellipse cx="29" cy="43.5" rx="1.6" ry="1.2" fill="#63310F"/>
+        <ellipse cx="35" cy="43.5" rx="1.6" ry="1.2" fill="#63310F"/>
+        <path d="M30 46.5C31.2 47.5 32.8 47.5 34 46.5" stroke="#8A4A1C" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="25" cy="31" rx="3.5" ry="4.2" fill="#24160A"/>
+        <circle cx="23.8" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="26" cy="32.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="39" cy="31" rx="3.5" ry="4.2" fill="#24160A"/>
+        <circle cx="37.8" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="40" cy="32.5" r="0.7" fill="#FFFFFF"/>
       </svg>`,
 
-      // 12. Owl
+      // 12. Tupai Pipi Tembem Garis Belang (Chipmunk with Striped Cheeks)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="32" cy="36" rx="18" ry="19" fill="#C4927F" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="23" cy="31" r="7" fill="#FFF8EF" stroke="currentColor" stroke-width="2"/>
-        <circle cx="41" cy="31" r="7" fill="#FFF8EF" stroke="currentColor" stroke-width="2"/>
-        <circle cx="23" cy="31" r="2" fill="currentColor"/>
-        <circle cx="41" cy="31" r="2" fill="currentColor"/>
-        <polygon points="32,35 29,40 35,40" fill="#FFA96B"/>
+        <!-- Ears -->
+        <circle cx="18" cy="18" r="5.5" fill="#7D421B"/>
+        <circle cx="18" cy="18" r="3" fill="#FFAFA8"/>
+        <circle cx="46" cy="18" r="5.5" fill="#7D421B"/>
+        <circle cx="46" cy="18" r="3" fill="#FFAFA8"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="35" rx="18" ry="17" fill="#9E582A"/>
+        <!-- Striped Cheeks -->
+        <path d="M14 34L25 36" stroke="#2B150A" stroke-width="2" stroke-linecap="round"/>
+        <path d="M14 37L25 39" stroke="#FFFDF8" stroke-width="2" stroke-linecap="round"/>
+        <path d="M14 40L25 42" stroke="#2B150A" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 34L39 36" stroke="#2B150A" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 37L39 39" stroke="#FFFDF8" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 40L39 42" stroke="#2B150A" stroke-width="2" stroke-linecap="round"/>
+        <!-- Chubby Cream Cheeks & Chin -->
+        <ellipse cx="26" cy="42" rx="7" ry="6" fill="#FFF2DE"/>
+        <ellipse cx="38" cy="42" rx="7" ry="6" fill="#FFF2DE"/>
+        <ellipse cx="32" cy="44" rx="5" ry="4" fill="#FFF2DE"/>
+        <!-- Eyes -->
+        <ellipse cx="23" cy="30" rx="3.5" ry="4.2" fill="#211208"/>
+        <circle cx="21.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="24" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="41" cy="30" rx="3.5" ry="4.2" fill="#211208"/>
+        <circle cx="39.8" cy="28.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="42" cy="31.8" r="0.7" fill="#FFFFFF"/>
+        <!-- Nose -->
+        <ellipse cx="32" cy="38" rx="2.8" ry="1.8" fill="#3D1E0C"/>
+        <path d="M30.5 41C31.5 42 32.5 42 33.5 41" stroke="#7D421B" stroke-width="1.3" stroke-linecap="round"/>
       </svg>`,
 
-      // 13. Sheep
+      // 13. Walrus Bertaring Panjang (Walrus with Long White Tusks)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="20" cy="28" r="8" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="22" r="9" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
-        <circle cx="44" cy="28" r="8" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
-        <circle cx="32" cy="38" r="10" fill="#FFB3A8" stroke="currentColor" stroke-width="2"/>
-        <circle cx="28" cy="36" r="2" fill="currentColor"/>
-        <circle cx="36" cy="36" r="2" fill="currentColor"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="34" rx="19" ry="18" fill="#B56754"/>
+        <!-- Eyes -->
+        <ellipse cx="24" cy="27" rx="3" ry="3.5" fill="#26120E"/>
+        <circle cx="23" cy="25.8" r="1.3" fill="#FFFFFF"/>
+        <ellipse cx="40" cy="27" rx="3" ry="3.5" fill="#26120E"/>
+        <circle cx="39" cy="25.8" r="1.3" fill="#FFFFFF"/>
+        <!-- Long White Tusks -->
+        <path d="M26 40C25 46 25 51 27 52C28 50 29 45 29 40" fill="#FFFDF8" stroke="#D1C3B4" stroke-width="0.8"/>
+        <path d="M38 40C39 46 39 51 37 52C36 50 35 45 35 40" fill="#FFFDF8" stroke="#D1C3B4" stroke-width="0.8"/>
+        <!-- Puffy Cream Whisker Pads -->
+        <ellipse cx="27" cy="39" rx="8" ry="6.5" fill="#FCE4D6"/>
+        <ellipse cx="37" cy="39" rx="8" ry="6.5" fill="#FCE4D6"/>
+        <!-- Nose -->
+        <ellipse cx="32" cy="33.5" rx="3.5" ry="2.2" fill="#381B15"/>
+        <!-- Whisker Dots -->
+        <circle cx="24" cy="38" r="0.8" fill="#B56754"/>
+        <circle cx="22" cy="40.5" r="0.8" fill="#B56754"/>
+        <circle cx="25" cy="41" r="0.8" fill="#B56754"/>
+        <circle cx="40" cy="38" r="0.8" fill="#B56754"/>
+        <circle cx="42" cy="40.5" r="0.8" fill="#B56754"/>
+        <circle cx="39" cy="41" r="0.8" fill="#B56754"/>
       </svg>`,
 
-      // 14. Turtle
+      // 14. Panda Mata Hitam Bintang (Sweet Panda Bear)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="32" cy="36" rx="17" ry="15" fill="#9CD9C8" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="32" cy="19" r="6.5" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
-        <circle cx="30" cy="18" r="1.8" fill="currentColor"/>
-        <circle cx="34" cy="18" r="1.8" fill="currentColor"/>
+        <!-- Round Black Ears -->
+        <circle cx="16" cy="18" r="7.5" fill="#28242E"/>
+        <circle cx="48" cy="18" r="7.5" fill="#28242E"/>
+        <!-- Pure White Head -->
+        <circle cx="32" cy="35" r="18" fill="#FFFDF8" stroke="#E6E0D8" stroke-width="1"/>
+        <!-- Tilted Black Eye Patches -->
+        <ellipse cx="23" cy="32" rx="5.5" ry="4.5" transform="rotate(-20 23 32)" fill="#28242E"/>
+        <ellipse cx="41" cy="32" rx="5.5" ry="4.5" transform="rotate(20 41 32)" fill="#28242E"/>
+        <!-- Sparkling White Pupils -->
+        <circle cx="23.5" cy="31" r="1.8" fill="#FFFFFF"/>
+        <circle cx="22" cy="33.5" r="0.8" fill="#FFFFFF"/>
+        <circle cx="40.5" cy="31" r="1.8" fill="#FFFFFF"/>
+        <circle cx="42" cy="33.5" r="0.8" fill="#FFFFFF"/>
+        <!-- Triangular Nose & Smile -->
+        <path d="M30 39L34 39L32 41.5Z" fill="#28242E"/>
+        <path d="M30 43C31 44 32 44 32 42C32 44 33 44 34 43" stroke="#28242E" stroke-width="1.3" stroke-linecap="round"/>
       </svg>`,
 
-      // 15. Bee
+      // 15. Rusa Hidung Merah Bersinar (Red-Nosed Rudolph Reindeer)
       `<svg viewBox="0 0 64 64" fill="none">
-        <ellipse cx="32" cy="38" rx="16" ry="14" fill="#FFD66B" stroke="currentColor" stroke-width="2.5"/>
-        <line x1="16" y1="36" x2="48" y2="36" stroke="currentColor" stroke-width="3"/>
-        <line x1="18" y1="42" x2="46" y2="42" stroke="currentColor" stroke-width="3"/>
-        <circle cx="25" cy="31" r="2.5" fill="currentColor"/>
-        <circle cx="39" cy="31" r="2.5" fill="currentColor"/>
+        <!-- Antlers -->
+        <path d="M22 20L18 10M19 14L15 13" stroke="#754422" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M42 20L46 10M45 14L49 13" stroke="#754422" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Ears -->
+        <ellipse cx="14" cy="27" rx="7" ry="4" transform="rotate(-30 14 27)" fill="#BA7F50"/>
+        <ellipse cx="14" cy="27" rx="4" ry="2" transform="rotate(-30 14 27)" fill="#FFAFA8"/>
+        <ellipse cx="50" cy="27" rx="7" ry="4" transform="rotate(30 50 27)" fill="#BA7F50"/>
+        <ellipse cx="50" cy="27" rx="4" ry="2" transform="rotate(30 50 27)" fill="#FFAFA8"/>
+        <!-- Head -->
+        <ellipse cx="32" cy="36" rx="17" ry="17" fill="#BA7F50"/>
+        <!-- Cream Snout -->
+        <ellipse cx="32" cy="42" rx="9" ry="6.5" fill="#FFF3E3"/>
+        <!-- Glowing Cherry-Red Nose -->
+        <circle cx="32" cy="38" r="4.5" fill="#FF334B"/>
+        <circle cx="30.5" cy="36.5" r="1.5" fill="#FFFFFF"/>
+        <!-- Smile -->
+        <path d="M30 44C31 45.2 33 45.2 34 44" stroke="#754422" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <ellipse cx="24" cy="31" rx="3.5" ry="4.2" fill="#24150D"/>
+        <circle cx="22.8" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="25" cy="32.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="40" cy="31" rx="3.5" ry="4.2" fill="#24150D"/>
+        <circle cx="38.8" cy="29.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="41" cy="32.5" r="0.7" fill="#FFFFFF"/>
       </svg>`,
 
-      // 16. Lion
+      // 16. Kucing Belang Mata Hijau (Cute Kitten with Emerald Eyes)
       `<svg viewBox="0 0 64 64" fill="none">
-        <circle cx="32" cy="35" r="20" fill="#FFA96B" stroke="currentColor" stroke-width="2.5"/>
-        <circle cx="32" cy="35" r="14" fill="#FFD66B" stroke="currentColor" stroke-width="2"/>
-        <circle cx="26" cy="31" r="2.2" fill="currentColor"/>
-        <circle cx="38" cy="31" r="2.2" fill="currentColor"/>
+        <!-- Pointed Cat Ears -->
+        <polygon points="14,28 20,12 28,24" fill="#FFA366"/>
+        <polygon points="17,25 21,16 26,23" fill="#FFAFA8"/>
+        <polygon points="50,28 44,12 36,24" fill="#FFA366"/>
+        <polygon points="47,25 43,16 38,23" fill="#FFAFA8"/>
+        <!-- Head -->
+        <circle cx="32" cy="36" r="17" fill="#FFA366"/>
+        <!-- White Cheeks -->
+        <ellipse cx="25" cy="41" rx="7" ry="5.5" fill="#FFFDF8"/>
+        <ellipse cx="39" cy="41" rx="7" ry="5.5" fill="#FFFDF8"/>
+        <!-- Sparkling Emerald Green Eyes -->
+        <ellipse cx="24" cy="32" rx="3.8" ry="4.5" fill="#27C487"/>
+        <ellipse cx="24" cy="32" rx="2" ry="3.5" fill="#143D2B"/>
+        <circle cx="22.8" cy="30.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="25" cy="33.5" r="0.7" fill="#FFFFFF"/>
+        <ellipse cx="40" cy="32" rx="3.8" ry="4.5" fill="#27C487"/>
+        <ellipse cx="40" cy="32" rx="2" ry="3.5" fill="#143D2B"/>
+        <circle cx="38.8" cy="30.5" r="1.5" fill="#FFFFFF"/>
+        <circle cx="41" cy="33.5" r="0.7" fill="#FFFFFF"/>
+        <!-- Pink Nose & Cute Mouth -->
+        <polygon points="32,38 30,36 34,36" fill="#FF7B90"/>
+        <path d="M29.5 40C31 41.5 32 41.5 32 39.5C32 41.5 33 41.5 34.5 40" stroke="#7A3D14" stroke-width="1.3" stroke-linecap="round"/>
+        <!-- Whiskers -->
+        <line x1="14" y1="39" x2="20" y2="40" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="14" y1="42" x2="20" y2="42" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="50" y1="39" x2="44" y2="40" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="50" y1="42" x2="44" y2="42" stroke="#FFFDF8" stroke-width="1.3" stroke-linecap="round"/>
       </svg>`
     ]
   },

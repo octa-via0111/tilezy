@@ -47,7 +47,7 @@
     magic: parseInt(localStorage.getItem('tilezy_magic_count') || '2', 10)
   };
 
-  let activeTheme = localStorage.getItem('tilezy_theme') || 'fruits';
+  let activeTheme = localStorage.getItem('tilezy_theme') || 'animals';
   let isDarkMode = localStorage.getItem('tilezy_dark_mode') === 'true';
   let playerUsername = localStorage.getItem('tilezy_username') || '';
 
@@ -62,6 +62,52 @@
   let lastMatchTime = 0;
   let tileSize = 44;
   let previousView = 'home';
+
+  // State Persistence: Simpan & Lanjutkan Langkah Terakhir
+  const SAVE_GAME_KEY = 'tilezy_saved_game';
+
+  function saveGameState() {
+    if (!engine || !viewGame || !viewGame.classList.contains('active')) return;
+    if (engine.isCleared()) {
+      clearSavedGameState();
+      return;
+    }
+    const state = {
+      difficulty: currentDifficulty,
+      level: currentLevel,
+      levelScore: currentLevelScore,
+      totalScore: totalScore,
+      theme: activeTheme,
+      rows: engine.rows,
+      cols: engine.cols,
+      numTypes: engine.numTypes,
+      board: engine.board,
+      savedAt: Date.now()
+    };
+    try {
+      localStorage.setItem(SAVE_GAME_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Gagal menyimpan progres:', e);
+    }
+  }
+
+  function getSavedGameState() {
+    try {
+      const raw = localStorage.getItem(SAVE_GAME_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.board && Array.isArray(parsed.board) && parsed.difficulty === currentDifficulty) {
+        return parsed;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function clearSavedGameState() {
+    try {
+      localStorage.removeItem(SAVE_GAME_KEY);
+    } catch (e) {}
+  }
 
   // DOM Views
   const viewWelcome = document.getElementById('view-welcome');
@@ -95,6 +141,7 @@
   const levelDisplay = document.getElementById('level-display');
   const remainingDisplay = document.getElementById('remaining-display');
   const scoreDisplay = document.getElementById('score-display');
+  const btnGameReload = document.getElementById('btn-game-reload');
   const btnPause = document.getElementById('btn-pause');
   const boardArea = document.getElementById('board-area');
   const boardContainer = document.getElementById('board-container');
@@ -185,6 +232,7 @@
   }
 
   function resetAllGameData(notify = true) {
+    clearSavedGameState();
     localStorage.removeItem('tilezy_score');
     localStorage.removeItem('tilezy_best_easy');
     localStorage.removeItem('tilezy_best_medium');
@@ -348,8 +396,9 @@
       return;
     }
 
-    // 4. Jika di arena game, kembali ke menu utama
+    // 4. Jika di arena game, kembali ke menu utama (simpan progres langkah terakhir)
     if (currentActiveView === 'game') {
+      saveGameState();
       switchView('home', false);
       if (window.location.hash) {
         history.replaceState({ view: 'home' }, '', window.location.pathname);
@@ -632,11 +681,32 @@
   }
 
   // Start round (NO TIMER, NO GRAVITY)
-  function startRound() {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
-    engine = new OnetEngine(cfg.rows, cfg.cols, cfg.types, 'none');
+  function startRound(forceNew = false) {
+    const saved = !forceNew ? getSavedGameState() : null;
 
-    currentLevelScore = 0;
+    if (saved && saved.board && Array.isArray(saved.board)) {
+      // Pulihkan langkah terakhir yang tersimpan persis di mana pemain berhenti!
+      engine = new OnetEngine(saved.rows, saved.cols, saved.numTypes || 16, 'none');
+      engine.board = saved.board;
+      currentLevel = saved.level || currentLevel;
+      currentLevelScore = saved.levelScore || 0;
+    } else {
+      const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+      let r = cfg.rows;
+      let c = cfg.cols;
+
+      // Adaptasi mode Sulit: 8 kolom x 12 baris di layar potret HP (96 ubin)
+      // agar pas dan tidak terpotong ke samping di layar ponsel sempit
+      const isPortrait = boardArea ? (boardArea.clientHeight >= boardArea.clientWidth) : (window.innerHeight > window.innerWidth);
+      if (currentDifficulty === 'hard') {
+        r = isPortrait ? 12 : 8;
+        c = isPortrait ? 8 : 12;
+      }
+
+      engine = new OnetEngine(r, c, cfg.types, 'none');
+      currentLevelScore = 0;
+    }
+
     comboCount = 0;
     maxComboInRound = 1;
     lastMatchTime = 0;
@@ -646,6 +716,7 @@
 
     updateHeaderUI();
     calculateAndRenderGrid();
+    saveGameState();
   }
 
   function updateHeaderUI() {
@@ -657,22 +728,25 @@
     }
   }
 
-  // Responsive Grid Calculation
+  // Responsive Grid Calculation (Menjamin seluruh ubin muat tanpa terpotong)
   function calculateAndRenderGrid() {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty];
-    const availWidth = Math.max(260, boardArea.clientWidth - 48);
-    const availHeight = Math.max(260, boardArea.clientHeight - 48);
+    if (!engine) return;
 
-    const colsWithBorder = cfg.cols + 0.8;
-    const rowsWithBorder = cfg.rows + 0.8;
+    const rCount = engine.rows;
+    const cCount = engine.cols;
 
-    const sizeW = Math.floor(availWidth / colsWithBorder);
-    const sizeH = Math.floor(availHeight / rowsWithBorder);
-    tileSize = Math.min(64, Math.max(34, Math.min(sizeW, sizeH)));
+    // Available board area inside container (with margin safety)
+    const availWidth = Math.max(180, boardArea.clientWidth - 16);
+    const availHeight = Math.max(180, boardArea.clientHeight - 16);
 
-    const gap = tileSize > 50 ? 5 : 3;
+    const gap = cCount >= 10 ? 2 : 3;
 
-    tileGrid.style.gridTemplateColumns = `repeat(${cfg.cols}, ${tileSize}px)`;
+    // Hitung ukuran ubin yang pas tanpa overflow
+    const sizeW = Math.floor((availWidth - (cCount - 1) * gap) / cCount);
+    const sizeH = Math.floor((availHeight - (rCount - 1) * gap) / rCount);
+    tileSize = Math.min(56, Math.max(20, Math.min(sizeW, sizeH)));
+
+    tileGrid.style.gridTemplateColumns = `repeat(${cCount}, ${tileSize}px)`;
     tileGrid.style.gap = `${gap}px`;
 
     renderBoardDOM();
@@ -691,12 +765,14 @@
 
   // Render DOM Tiles from Engine
   function renderBoardDOM() {
+    if (!engine) return;
     tileGrid.innerHTML = '';
-    const theme = THEMES[activeTheme] || THEMES.fruits;
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty];
+    const theme = THEMES[activeTheme] || THEMES.animals || THEMES.fruits;
+    const rCount = engine.rows;
+    const cCount = engine.cols;
 
-    for (let r = 1; r <= cfg.rows; r++) {
-      for (let c = 1; c <= cfg.cols; c++) {
+    for (let r = 1; r <= rCount; r++) {
+      for (let c = 1; c <= cCount; c++) {
         const val = engine.board[r][c];
         const tile = document.createElement('div');
         tile.className = 'tile';
@@ -818,6 +894,8 @@
         handleLevelWin();
       } else if (!engine.hasValidMoves()) {
         handleDeadlock();
+      } else {
+        saveGameState();
       }
     }, 240);
   }
@@ -870,7 +948,8 @@
   }
 
   function getPixelCoordForGridCell(r, c) {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty];
+    const rMax = engine ? engine.rows : (DIFFICULTY_CONFIG[currentDifficulty]?.rows || 8);
+    const cMax = engine ? engine.cols : (DIFFICULTY_CONFIG[currentDifficulty]?.cols || 8);
     const containerRect = boardContainer.getBoundingClientRect();
     const gridRect = tileGrid.getBoundingClientRect();
 
@@ -880,7 +959,7 @@
     let x = 0;
     let y = 0;
 
-    if (r >= 1 && r <= cfg.rows && c >= 1 && c <= cfg.cols) {
+    if (r >= 1 && r <= rMax && c >= 1 && c <= cMax) {
       const tileEl = getTileEl(r, c);
       if (tileEl) {
         const tRect = tileEl.getBoundingClientRect();
@@ -890,12 +969,12 @@
       }
     }
 
-    const gap = tileSize > 50 ? 5 : 3;
+    const gap = cMax >= 10 ? 2 : 3;
     const cellStep = tileSize + gap;
 
     if (c === 0) {
       x = gridOffsetX - 11;
-    } else if (c > cfg.cols) {
+    } else if (c > cMax) {
       x = gridOffsetX + gridRect.width + 11;
     } else {
       const refColTile = getTileEl(1, c);
@@ -909,7 +988,7 @@
 
     if (r === 0) {
       y = gridOffsetY - 11;
-    } else if (r > cfg.rows) {
+    } else if (r > rMax) {
       y = gridOffsetY + gridRect.height + 11;
     } else {
       const refRowTile = getTileEl(r, 1);
@@ -957,6 +1036,7 @@
 
   // CUTE LEVEL WIN CELEBRATION (Dancing Mascot + Confetti Shower)
   function handleLevelWin() {
+    clearSavedGameState();
     soundController.playWin();
 
     totalScore += currentLevelScore;
@@ -1091,6 +1171,7 @@
     engine.shuffle();
     renderBoardDOM();
     showComboBanner('Papan Diacak! 🔀');
+    saveGameState();
   }
 
   // Magic Auto-Match Booster (matches 1 pair instantly!)
@@ -1305,6 +1386,16 @@
       switchView('themes');
     });
 
+    if (btnGameReload) {
+      btnGameReload.addEventListener('click', () => {
+        soundController.playClick();
+        if (confirm('Mulai ulang level ini dari awal?')) {
+          clearSavedGameState();
+          startRound(true);
+        }
+      });
+    }
+
     btnPause.addEventListener('click', () => {
       soundController.playClick();
       isPaused = true;
@@ -1320,26 +1411,30 @@
     document.getElementById('btn-pause-restart').addEventListener('click', () => {
       soundController.playClick();
       modalPause.classList.remove('active');
-      startRound();
+      clearSavedGameState();
+      startRound(true);
     });
 
     document.getElementById('btn-pause-home').addEventListener('click', () => {
       soundController.playClick();
       modalPause.classList.remove('active');
+      saveGameState();
       switchView('home');
     });
 
     document.getElementById('btn-win-replay').addEventListener('click', () => {
       soundController.playClick();
       modalWin.classList.remove('active');
-      startRound();
+      clearSavedGameState();
+      startRound(true);
     });
 
     document.getElementById('btn-win-next').addEventListener('click', () => {
       soundController.playClick();
       modalWin.classList.remove('active');
+      clearSavedGameState();
       currentLevel++;
-      startRound();
+      startRound(true);
     });
   }
 
@@ -1401,21 +1496,27 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.1')
+        navigator.serviceWorker.register('sw.js?v=3.2')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.1 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.2 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
 
-      // Periksa update setiap kali pemain kembali ke aplikasi/tab
+      // Periksa update setiap kali pemain kembali ke aplikasi, dan simpan progres saat backgrounded
       document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && navigator.serviceWorker.controller) {
+        if (document.hidden) {
+          saveGameState();
+        } else if (navigator.serviceWorker && navigator.serviceWorker.controller) {
           navigator.serviceWorker.getRegistration().then(reg => {
             if (reg) reg.update();
           });
         }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        saveGameState();
       });
     }
 
