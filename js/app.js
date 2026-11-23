@@ -10,21 +10,18 @@
   const DIFFICULTY_CONFIG = {
     easy: {
       name: 'Mudah',
-      badge: '🟢',
       rows: 6,
       cols: 6,
       types: 8
     },
     medium: {
       name: 'Sedang',
-      badge: '🟡',
       rows: 8,
       cols: 8,
       types: 12
     },
     hard: {
       name: 'Sulit',
-      badge: '🔴',
       rows: 8,
       cols: 12,
       types: 16
@@ -99,14 +96,14 @@
       if (parsed && parsed.board && Array.isArray(parsed.board) && parsed.difficulty === currentDifficulty) {
         return parsed;
       }
-    } catch (e) {}
+    } catch (e) { }
     return null;
   }
 
   function clearSavedGameState() {
     try {
       localStorage.removeItem(SAVE_GAME_KEY);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // DOM Views
@@ -439,7 +436,7 @@
         playerUsername = 'Pemain';
         try {
           localStorage.setItem('tilezy_username', playerUsername);
-        } catch (e) {}
+        } catch (e) { }
         updateUsernameDisplay();
       }
       // LANGSUNG MULAI GAME! Tidak akan pernah kembali ke layar pengisian nama
@@ -1265,7 +1262,7 @@
       } else {
         soundController.playClick();
       }
-    } catch (err) {}
+    } catch (err) { }
 
     // Masuk ke Menu Utama (view-home)
     switchView('home');
@@ -1337,7 +1334,7 @@
       playerUsername = '';
       try {
         localStorage.removeItem('tilezy_username');
-      } catch (e) {}
+      } catch (e) { }
 
       updateUsernameDisplay();
 

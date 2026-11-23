@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -8,37 +9,39 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Tilezy">
   <meta name="description" content="Tilezy - Game Onet Connect Klasik dengan Tampilan Pastel Nyaman">
-  
+
   <title>Tilezy - Cozy Onet Game</title>
-  
+
   <!-- Favicon & Icons -->
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="manifest" href="manifest.json">
-  
+
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="css/style.css?v=3.2">
 </head>
+
 <body>
 
   <!-- Offline Status Toast Indicator -->
-  <div id="offline-toast" class="offline-toast-pill" style="display: none;">📶 Mode Offline · Skor & Data Tetap Aman!</div>
+  <div id="offline-toast" class="offline-toast-pill" style="display: none;">📶 Mode Offline · Skor & Data Tetap Aman!
+  </div>
 
   <!-- Celebration Confetti Canvas -->
   <canvas id="confetti-canvas"></canvas>
 
   <div id="game-app">
-    
+
     <!-- ========================================================
          VIEW 0: WELCOME SCREEN (Tampilan Awal Mandiri Tanpa Background)
          ======================================================== -->
     <div class="view-screen" id="view-welcome">
       <div class="welcome-screen-container">
-        
+
         <!-- Top Row: Back Button (if editing name) & Dark Mode Toggle -->
         <div class="welcome-top-bar">
           <button class="btn-theme-toggle" id="btn-welcome-back" style="display: none;" title="Kembali ke Menu Utama">
@@ -54,50 +57,53 @@
         <!-- Center Card Box -->
         <div class="welcome-center-content">
           <div class="welcome-card-box">
-            
+
             <!-- Logo Game Tilezy di Atas Form -->
             <div class="username-logo-wrapper">
               <svg class="username-game-logo" viewBox="0 0 160 110" fill="none">
                 <!-- Soft Background Aura -->
-                <circle cx="80" cy="50" r="44" fill="var(--coral-light)" opacity="0.4"/>
-                
+                <circle cx="80" cy="50" r="44" fill="var(--coral-light)" opacity="0.4" />
+
                 <!-- Connecting Arcade Beam (Onet Line) -->
-                <path d="M42 56 H 80 V 34 H 118" stroke="#FFD66B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M42 56 H 80 V 34 H 118" stroke="#FF8B7B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="80" cy="56" r="4.5" fill="#FF8B7B"/>
-                <circle cx="80" cy="34" r="4.5" fill="#FF8B7B"/>
+                <path d="M42 56 H 80 V 34 H 118" stroke="#FFD66B" stroke-width="7" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M42 56 H 80 V 34 H 118" stroke="#FF8B7B" stroke-width="3.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <circle cx="80" cy="56" r="4.5" fill="#FF8B7B" />
+                <circle cx="80" cy="34" r="4.5" fill="#FF8B7B" />
 
                 <!-- Left Mini Tile: Blueberries -->
                 <g transform="translate(18, 30) rotate(-8)">
-                  <rect y="4" width="38" height="42" rx="8" fill="#86BFAE"/>
-                  <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
-                  <circle cx="15" cy="24" r="7" fill="#6B7FD7"/>
-                  <circle cx="23" cy="24" r="7" fill="#5869BD"/>
-                  <circle cx="19" cy="18" r="6.5" fill="#8093F1"/>
-                  <circle cx="19" cy="17" r="2" fill="#FFFFFF"/>
+                  <rect y="4" width="38" height="42" rx="8" fill="#86BFAE" />
+                  <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8" />
+                  <circle cx="15" cy="24" r="7" fill="#6B7FD7" />
+                  <circle cx="23" cy="24" r="7" fill="#5869BD" />
+                  <circle cx="19" cy="18" r="6.5" fill="#8093F1" />
+                  <circle cx="19" cy="17" r="2" fill="#FFFFFF" />
                 </g>
 
                 <!-- Right Mini Tile: Peppermint Candy -->
                 <g transform="translate(104, 14) rotate(8)">
-                  <rect y="4" width="38" height="42" rx="8" fill="#86BFAE"/>
-                  <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
-                  <polygon points="6,15 13,21 6,27 4,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5"/>
-                  <polygon points="32,15 25,21 32,27 34,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5"/>
-                  <circle cx="19" cy="21" r="11" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
-                  <path d="M19 21 L19 10 A11 11 0 0 1 27 13 Z" fill="#FF8B7B"/>
-                  <path d="M19 21 L30 21 A11 11 0 0 1 27 29 Z" fill="#FF8B7B"/>
-                  <path d="M19 21 L19 32 A11 11 0 0 1 11 29 Z" fill="#FF8B7B"/>
-                  <path d="M19 21 L8 21 A11 11 0 0 1 11 13 Z" fill="#FF8B7B"/>
+                  <rect y="4" width="38" height="42" rx="8" fill="#86BFAE" />
+                  <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8" />
+                  <polygon points="6,15 13,21 6,27 4,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5" />
+                  <polygon points="32,15 25,21 32,27 34,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5" />
+                  <circle cx="19" cy="21" r="11" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8" />
+                  <path d="M19 21 L19 10 A11 11 0 0 1 27 13 Z" fill="#FF8B7B" />
+                  <path d="M19 21 L30 21 A11 11 0 0 1 27 29 Z" fill="#FF8B7B" />
+                  <path d="M19 21 L19 32 A11 11 0 0 1 11 29 Z" fill="#FF8B7B" />
+                  <path d="M19 21 L8 21 A11 11 0 0 1 11 13 Z" fill="#FF8B7B" />
                 </g>
 
                 <!-- Sparkles -->
-                <path d="M78 8 L80 2 L82 8 L88 10 L82 12 L80 18 L78 12 L72 10 Z" fill="#FFD66B"/>
-                <path d="M142 42 L143.5 38 L145 42 L149 43.5 L145 45 L143.5 49 L142 45 L138 43.5 Z" fill="#B9ACF5"/>
-                <path d="M16 18 L17.5 14 L19 18 L23 19.5 L19 21 L17.5 25 L16 21 L12 19.5 Z" fill="#FF8B7B"/>
+                <path d="M78 8 L80 2 L82 8 L88 10 L82 12 L80 18 L78 12 L72 10 Z" fill="#FFD66B" />
+                <path d="M142 42 L143.5 38 L145 42 L149 43.5 L145 45 L143.5 49 L142 45 L138 43.5 Z" fill="#B9ACF5" />
+                <path d="M16 18 L17.5 14 L19 18 L23 19.5 L19 21 L17.5 25 L16 21 L12 19.5 Z" fill="#FF8B7B" />
 
                 <!-- Tilezy Cute Pill / Badge -->
-                <rect x="42" y="78" width="76" height="24" rx="10" fill="#483D52"/>
-                <text x="80" y="94" fill="#FFF8EF" font-family="'Fredoka', sans-serif" font-weight="900" font-size="13" text-anchor="middle" letter-spacing="0.8">TILEZY</text>
+                <rect x="42" y="78" width="76" height="24" rx="10" fill="#483D52" />
+                <text x="80" y="94" fill="#FFF8EF" font-family="'Fredoka', sans-serif" font-weight="900" font-size="13"
+                  text-anchor="middle" letter-spacing="0.8">TILEZY</text>
               </svg>
             </div>
 
@@ -108,20 +114,13 @@
             <form id="form-welcome-username" class="username-form-body" onsubmit="return false;">
               <label class="username-label" for="input-welcome-username">Username</label>
               <div class="username-input-wrapper">
-                <input 
-                  type="text" 
-                  id="input-welcome-username" 
-                  class="username-input-field" 
-                  placeholder="mis. ular_ngebut" 
-                  maxlength="16" 
-                  autocomplete="off" 
-                  spellcheck="false" 
-                  autocorrect="off" 
-                  autocapitalize="none"
-                />
+                <input type="text" id="input-welcome-username" class="username-input-field"
+                  placeholder="mis. ular_ngebut" maxlength="16" autocomplete="off" spellcheck="false" autocorrect="off"
+                  autocapitalize="none" />
               </div>
-              <p class="username-helper-text" id="welcome-username-helper">Bisa huruf, angka, atau spasi (mis. Okta, Budi 123)</p>
-              
+              <p class="username-helper-text" id="welcome-username-helper">Bisa huruf, angka, atau spasi (mis. Okta,
+                Budi 123)</p>
+
               <!-- Action Button Sesuai Gambar User -->
               <button type="submit" class="btn-start-play-username" id="btn-welcome-submit" style="margin-top: 18px;">
                 <span>Mulai main</span>
@@ -129,7 +128,8 @@
               </button>
 
               <!-- Tombol Keluar / Logout Profil -->
-              <button type="button" class="btn-welcome-logout" id="btn-welcome-logout" style="display: none;" title="Keluar dari profil ini">
+              <button type="button" class="btn-welcome-logout" id="btn-welcome-logout" style="display: none;"
+                title="Keluar dari profil ini">
                 <span>🚪 Keluar Profil</span>
               </button>
             </form>
@@ -145,7 +145,7 @@
          ======================================================== -->
     <div class="view-screen" id="view-home">
       <div class="home-container">
-        
+
         <!-- Home Top Row: Profile Pill & Dark Mode Toggle -->
         <div class="home-top-bar-row">
           <button class="btn-theme-toggle user-profile-pill" id="btn-open-profile" title="Ganti Nama Pemain">
@@ -169,36 +169,40 @@
           <!-- Left: Blueberries -->
           <div class="fan-tile left">
             <svg viewBox="0 0 64 64" fill="none">
-              <path d="M42 22C46 16 52 18 54 22C52 26 46 26 42 22Z" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
-              <path d="M22 22C18 16 12 18 10 22C12 26 18 26 22 22Z" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
-              <circle cx="24" cy="38" r="14" fill="#6B7FD7" stroke="currentColor" stroke-width="2.5"/>
-              <circle cx="40" cy="38" r="14" fill="#5869BD" stroke="currentColor" stroke-width="2.5"/>
-              <circle cx="32" cy="28" r="13" fill="#8093F1" stroke="currentColor" stroke-width="2.5"/>
-              <polygon points="32,24 33.5,27 36,27 34,29 35,32 32,30 29,32 30,29 28,27 30.5,27" fill="currentColor"/>
+              <path d="M42 22C46 16 52 18 54 22C52 26 46 26 42 22Z" fill="#9CD9C8" stroke="currentColor"
+                stroke-width="2" />
+              <path d="M22 22C18 16 12 18 10 22C12 26 18 26 22 22Z" fill="#9CD9C8" stroke="currentColor"
+                stroke-width="2" />
+              <circle cx="24" cy="38" r="14" fill="#6B7FD7" stroke="currentColor" stroke-width="2.5" />
+              <circle cx="40" cy="38" r="14" fill="#5869BD" stroke="currentColor" stroke-width="2.5" />
+              <circle cx="32" cy="28" r="13" fill="#8093F1" stroke="currentColor" stroke-width="2.5" />
+              <polygon points="32,24 33.5,27 36,27 34,29 35,32 32,30 29,32 30,29 28,27 30.5,27" fill="currentColor" />
             </svg>
           </div>
 
           <!-- Center: Peppermint Candy -->
           <div class="fan-tile center">
             <svg viewBox="0 0 64 64" fill="none">
-              <polygon points="12,24 22,32 12,40 8,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
-              <polygon points="52,24 42,32 52,40 56,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
-              <circle cx="32" cy="32" r="16" fill="#FFFFFF" stroke="currentColor" stroke-width="3"/>
-              <path d="M32 32 L32 16 A16 16 0 0 1 43 21 Z" fill="#FF8B7B"/>
-              <path d="M32 32 L48 32 A16 16 0 0 1 43 43 Z" fill="#FF8B7B"/>
-              <path d="M32 32 L32 48 A16 16 0 0 1 21 43 Z" fill="#FF8B7B"/>
-              <path d="M32 32 L16 32 A16 16 0 0 1 21 21 Z" fill="#FF8B7B"/>
-              <circle cx="32" cy="32" r="3" fill="#FFFFFF"/>
+              <polygon points="12,24 22,32 12,40 8,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5" />
+              <polygon points="52,24 42,32 52,40 56,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5" />
+              <circle cx="32" cy="32" r="16" fill="#FFFFFF" stroke="currentColor" stroke-width="3" />
+              <path d="M32 32 L32 16 A16 16 0 0 1 43 21 Z" fill="#FF8B7B" />
+              <path d="M32 32 L48 32 A16 16 0 0 1 43 43 Z" fill="#FF8B7B" />
+              <path d="M32 32 L32 48 A16 16 0 0 1 21 43 Z" fill="#FF8B7B" />
+              <path d="M32 32 L16 32 A16 16 0 0 1 21 21 Z" fill="#FF8B7B" />
+              <circle cx="32" cy="32" r="3" fill="#FFFFFF" />
             </svg>
           </div>
 
           <!-- Right: Carrot -->
           <div class="fan-tile right">
             <svg viewBox="0 0 64 64" fill="none">
-              <path d="M32 20C32 12 28 8 26 12M32 20C32 10 32 6 32 10M32 20C32 12 36 8 38 12" stroke="#9CD9C8" stroke-width="3.5" stroke-linecap="round"/>
-              <path d="M22 20C22 18 42 18 42 20C42 32 34 52 32 56C30 52 22 32 22 20Z" fill="#FFA96B" stroke="currentColor" stroke-width="2.5"/>
-              <line x1="26" y1="26" x2="33" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="31" y1="34" x2="38" y2="34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M32 20C32 12 28 8 26 12M32 20C32 10 32 6 32 10M32 20C32 12 36 8 38 12" stroke="#9CD9C8"
+                stroke-width="3.5" stroke-linecap="round" />
+              <path d="M22 20C22 18 42 18 42 20C42 32 34 52 32 56C30 52 22 32 22 20Z" fill="#FFA96B"
+                stroke="currentColor" stroke-width="2.5" />
+              <line x1="26" y1="26" x2="33" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <line x1="31" y1="34" x2="38" y2="34" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
             </svg>
           </div>
         </div>
@@ -207,9 +211,9 @@
         <div class="difficulty-section">
           <span class="diff-label">Tingkat Kesulitan:</span>
           <div class="diff-pills">
-            <button class="diff-pill active" data-diff="easy" id="diff-easy">🟢 Mudah</button>
-            <button class="diff-pill" data-diff="medium" id="diff-medium">🟡 Sedang</button>
-            <button class="diff-pill" data-diff="hard" id="diff-hard">🔴 Sulit</button>
+            <button class="diff-pill active" data-diff="easy" id="diff-easy">Mudah</button>
+            <button class="diff-pill" data-diff="medium" id="diff-medium">Sedang</button>
+            <button class="diff-pill" data-diff="hard" id="diff-hard">Sulit</button>
           </div>
         </div>
 
@@ -224,8 +228,9 @@
         <div class="pwa-install-banner-wrapper" id="pwa-install-banner" style="display: none;">
           <div class="pwa-install-card">
             <div class="pwa-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>
             </div>
             <div class="pwa-text-col">
@@ -274,7 +279,8 @@
         </header>
 
         <div class="themes-grid-scroll">
-          <p style="margin-bottom: 14px; font-weight: 700; font-size: 0.9rem; color: var(--plum-muted); text-align: center;">
+          <p
+            style="margin-bottom: 14px; font-weight: 700; font-size: 0.9rem; color: var(--plum-muted); text-align: center;">
             Sentuh tema di bawah untuk mengganti gambar ubin secara instan:
           </p>
           <div class="themes-cards-grid" id="themes-page-grid"></div>
@@ -287,7 +293,7 @@
          ======================================================== -->
     <div class="view-screen" id="view-game">
       <div class="game-view">
-        
+
         <!-- TOP STATUS BAR (No timer) -->
         <header class="game-top-bar">
           <button class="btn-icon-soft" id="btn-back-home" title="Kembali ke Menu Utama">🏠</button>
@@ -368,21 +374,22 @@
         <span>👤 Pemain: <strong id="score-username-display">Belum ada</strong></span>
         <div style="display: flex; gap: 6px;">
           <button class="btn-text-edit" id="btn-edit-username-score">✏️ Ubah</button>
-          <button class="btn-text-edit" id="btn-logout-score" style="color: #E86452;" title="Keluar dari profil">🚪 Keluar</button>
+          <button class="btn-text-edit" id="btn-logout-score" style="color: #E86452;" title="Keluar dari profil">🚪
+            Keluar</button>
         </div>
       </div>
 
       <div class="stats-card-box" style="flex-direction: column; gap: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 800; color: var(--mint-dark);">🟢 Mudah (Easy)</span>
+          <span style="font-weight: 800; color: var(--mint-dark);">Mudah (Easy)</span>
           <span style="font-weight: 900;" id="best-easy">0</span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 800; color: var(--butter-dark);">🟡 Sedang (Medium)</span>
+          <span style="font-weight: 800; color: var(--butter-dark);">Sedang (Medium)</span>
           <span style="font-weight: 900;" id="best-medium">0</span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 800; color: var(--coral-dark);">🔴 Sulit (Hard)</span>
+          <span style="font-weight: 800; color: var(--coral-dark);">Sulit (Hard)</span>
           <span style="font-weight: 900;" id="best-hard">0</span>
         </div>
       </div>
@@ -402,8 +409,11 @@
       <div class="setting-row">
         <span class="setting-label">👤 Nama Pemain</span>
         <div style="display: flex; gap: 6px;">
-          <button class="toggle-switch-btn on" id="btn-edit-username-settings" style="width: auto; padding: 5px 12px;">Ubah</button>
-          <button class="toggle-switch-btn" id="btn-logout-settings" style="background: #E86452; color: #FFFFFF; width: auto; padding: 5px 12px;" title="Keluar dari profil">Keluar</button>
+          <button class="toggle-switch-btn on" id="btn-edit-username-settings"
+            style="width: auto; padding: 5px 12px;">Ubah</button>
+          <button class="toggle-switch-btn" id="btn-logout-settings"
+            style="background: #E86452; color: #FFFFFF; width: auto; padding: 5px 12px;"
+            title="Keluar dari profil">Keluar</button>
         </div>
       </div>
 
@@ -424,7 +434,8 @@
 
       <div class="setting-row" style="margin-top: 8px;">
         <span class="setting-label">🔄 Mulai Ulang / Reset Data</span>
-        <button class="toggle-switch-btn" id="btn-reset-data" style="background: var(--coral); color: #FFFFFF;">Reset</button>
+        <button class="toggle-switch-btn" id="btn-reset-data"
+          style="background: var(--coral); color: #FFFFFF;">Reset</button>
       </div>
 
       <div class="modal-actions" style="margin-top: 14px;">
@@ -450,32 +461,33 @@
   <!-- MODAL: LEVEL WIN (Cute Mascot & Confetti Celebration) -->
   <div class="modal-overlay" id="modal-win">
     <div class="pastel-modal-card" style="position: relative; overflow: visible;">
-      
+
       <!-- Cute Dancing Mascot (Kitten with Joyful Arms & Party Star) -->
       <div class="mascot-celebration">
         <svg viewBox="0 0 100 100" fill="none">
           <!-- Cute Party Hat -->
-          <polygon points="50,6 38,28 62,28" fill="#FF8B7B" stroke="#483D52" stroke-width="2.5"/>
-          <circle cx="50" cy="6" r="3.5" fill="#FFD66B"/>
+          <polygon points="50,6 38,28 62,28" fill="#FF8B7B" stroke="#483D52" stroke-width="2.5" />
+          <circle cx="50" cy="6" r="3.5" fill="#FFD66B" />
           <!-- Kitten Head -->
-          <circle cx="50" cy="50" r="28" fill="#FFFFFF" stroke="#483D52" stroke-width="3"/>
+          <circle cx="50" cy="50" r="28" fill="#FFFFFF" stroke="#483D52" stroke-width="3" />
           <!-- Pointy Ears with Pink Inside -->
-          <polygon points="26,30 36,42 22,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5"/>
-          <polygon points="27,33 34,42 24,44" fill="#FFB3A8"/>
-          <polygon points="74,30 64,42 78,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5"/>
-          <polygon points="73,33 66,42 76,44" fill="#FFB3A8"/>
+          <polygon points="26,30 36,42 22,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5" />
+          <polygon points="27,33 34,42 24,44" fill="#FFB3A8" />
+          <polygon points="74,30 64,42 78,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5" />
+          <polygon points="73,33 66,42 76,44" fill="#FFB3A8" />
           <!-- Happy Squinted Eyes -->
-          <path d="M38 48C38 44 44 44 44 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M56 48C56 44 62 44 62 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M38 48C38 44 44 44 44 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M56 48C56 44 62 44 62 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round" />
           <!-- Pink Cute Cheeks -->
-          <ellipse cx="34" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6"/>
-          <ellipse cx="66" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6"/>
+          <ellipse cx="34" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6" />
+          <ellipse cx="66" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6" />
           <!-- Heart Nose & Cat Smile -->
-          <polygon points="50,53 47,50 53,50" fill="#FF8B7B"/>
-          <path d="M47 54C47 57 50 57 50 54M50 54C50 57 53 57 53 54" stroke="#483D52" stroke-width="2" stroke-linecap="round"/>
+          <polygon points="50,53 47,50 53,50" fill="#FF8B7B" />
+          <path d="M47 54C47 57 50 57 50 54M50 54C50 57 53 57 53 54" stroke="#483D52" stroke-width="2"
+            stroke-linecap="round" />
           <!-- Joyful Waving Paws -->
-          <circle cx="24" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5"/>
-          <circle cx="76" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5"/>
+          <circle cx="24" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5" />
+          <circle cx="76" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5" />
         </svg>
       </div>
 
@@ -516,4 +528,5 @@
   <script src="js/audio.js?v=3.2"></script>
   <script src="js/app.js?v=3.2"></script>
 </body>
+
 </html>
