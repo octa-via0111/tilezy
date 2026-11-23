@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/style.css?v=2.4">
+  <link rel="stylesheet" href="css/style.css?v=2.5">
 </head>
 <body>
 
@@ -36,8 +36,12 @@
     <div class="view-screen active" id="view-home">
       <div class="home-container">
         
-        <!-- Home Top Row: Dark Mode Toggle -->
+        <!-- Home Top Row: Profile Pill & Dark Mode Toggle -->
         <div class="home-top-bar-row">
+          <button class="btn-theme-toggle user-profile-pill" id="btn-open-profile" title="Ganti Nama Pemain">
+            <span class="mode-icon">👤</span>
+            <span class="mode-text" id="home-username-badge">Pemain</span>
+          </button>
           <button class="btn-theme-toggle" id="btn-toggle-dark-mode" title="Ubah Mode Gelap/Terang">
             <span class="mode-icon">🌙</span>
             <span class="mode-text">Dark</span>
@@ -241,11 +245,99 @@
 
   </div>
 
+  <!-- MODAL: INPUT USERNAME PAPAN PERINGKAT -->
+  <div class="modal-overlay" id="modal-username">
+    <div class="pastel-modal-card username-modal-card">
+      
+      <!-- Logo Game Tilezy di Atas Form (3 Fanned Mahjong Tiles + Sparkles + Connecting Beam) -->
+      <div class="username-logo-wrapper">
+        <svg class="username-game-logo" viewBox="0 0 160 110" fill="none">
+          <!-- Soft Background Aura -->
+          <circle cx="80" cy="50" r="44" fill="var(--coral-light)" opacity="0.4"/>
+          
+          <!-- Connecting Arcade Beam (Onet Line) -->
+          <path d="M42 56 H 80 V 34 H 118" stroke="#FFD66B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M42 56 H 80 V 34 H 118" stroke="#FF8B7B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="80" cy="56" r="4.5" fill="#FF8B7B"/>
+          <circle cx="80" cy="34" r="4.5" fill="#FF8B7B"/>
+
+          <!-- Left Mini Tile: Blueberries -->
+          <g transform="translate(18, 30) rotate(-8)">
+            <rect y="4" width="38" height="42" rx="8" fill="#86BFAE"/>
+            <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
+            <circle cx="15" cy="24" r="7" fill="#6B7FD7"/>
+            <circle cx="23" cy="24" r="7" fill="#5869BD"/>
+            <circle cx="19" cy="18" r="6.5" fill="#8093F1"/>
+            <circle cx="19" cy="17" r="2" fill="#FFFFFF"/>
+          </g>
+
+          <!-- Right Mini Tile: Peppermint Candy -->
+          <g transform="translate(104, 14) rotate(8)">
+            <rect y="4" width="38" height="42" rx="8" fill="#86BFAE"/>
+            <rect width="38" height="42" rx="8" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
+            <polygon points="6,15 13,21 6,27 4,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5"/>
+            <polygon points="32,15 25,21 32,27 34,21" fill="#FFFFFF" stroke="#483D52" stroke-width="1.5"/>
+            <circle cx="19" cy="21" r="11" fill="#FFFFFF" stroke="#483D52" stroke-width="1.8"/>
+            <path d="M19 21 L19 10 A11 11 0 0 1 27 13 Z" fill="#FF8B7B"/>
+            <path d="M19 21 L30 21 A11 11 0 0 1 27 29 Z" fill="#FF8B7B"/>
+            <path d="M19 21 L19 32 A11 11 0 0 1 11 29 Z" fill="#FF8B7B"/>
+            <path d="M19 21 L8 21 A11 11 0 0 1 11 13 Z" fill="#FF8B7B"/>
+          </g>
+
+          <!-- Sparkles -->
+          <path d="M78 8 L80 2 L82 8 L88 10 L82 12 L80 18 L78 12 L72 10 Z" fill="#FFD66B"/>
+          <path d="M142 42 L143.5 38 L145 42 L149 43.5 L145 45 L143.5 49 L142 45 L138 43.5 Z" fill="#B9ACF5"/>
+          <path d="M16 18 L17.5 14 L19 18 L23 19.5 L19 21 L17.5 25 L16 21 L12 19.5 Z" fill="#FF8B7B"/>
+
+          <!-- Tilezy Cute Pill / Badge -->
+          <rect x="42" y="78" width="76" height="24" rx="10" fill="#483D52"/>
+          <text x="80" y="94" fill="#FFF8EF" font-family="'Fredoka', sans-serif" font-weight="900" font-size="13" text-anchor="middle" letter-spacing="0.8">TILEZY</text>
+        </svg>
+      </div>
+
+      <!-- Heading Sesuai Gambar User -->
+      <h3 class="username-modal-header">Buat nama untuk ditampilkan di papan peringkat</h3>
+
+      <!-- Username Input Form Sesuai Gambar User -->
+      <div class="username-form-body">
+        <label class="username-label" for="input-username">Username</label>
+        <div class="username-input-wrapper">
+          <input 
+            type="text" 
+            id="input-username" 
+            class="username-input-field" 
+            placeholder="mis. ular_ngebut" 
+            maxlength="16" 
+            autocomplete="off" 
+            spellcheck="false" 
+            autocorrect="off" 
+            autocapitalize="none"
+          />
+        </div>
+        <p class="username-helper-text" id="username-helper">3–16 karakter: huruf, angka, atau garis bawah (_).</p>
+      </div>
+
+      <!-- Action Button Sesuai Gambar User -->
+      <button class="btn-start-play-username" id="btn-submit-username">
+        <span>Mulai main</span>
+        <span class="arrow">→</span>
+      </button>
+
+      <!-- Skip Button jika hanya ingin melihat/edit -->
+      <button class="btn-skip-username" id="btn-close-username">Batal</button>
+    </div>
+  </div>
+
   <!-- MODAL: SCORE & TROPHY -->
   <div class="modal-overlay" id="modal-score">
     <div class="pastel-modal-card">
-      <h2 class="modal-title">REKOR TERBAIK 🏆</h2>
-      <p class="modal-subtitle">Pencapaian skor tertinggi Anda di Tilezy</p>
+      <h2 class="modal-title">PAPAN PERINGKAT 🏆</h2>
+      <p class="modal-subtitle">Pencapaian skor tertinggi di Tilezy</p>
+
+      <div class="player-profile-badge-row">
+        <span>👤 Pemain: <strong id="score-username-display">Belum ada</strong></span>
+        <button class="btn-text-edit" id="btn-edit-username-score">✏️ Ubah</button>
+      </div>
 
       <div class="stats-card-box" style="flex-direction: column; gap: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -272,7 +364,12 @@
   <div class="modal-overlay" id="modal-settings">
     <div class="pastel-modal-card">
       <h2 class="modal-title">PENGATURAN ⚙️</h2>
-      <p class="modal-subtitle">Atur suara dan mode tampilan</p>
+      <p class="modal-subtitle">Atur suara dan profil pemain</p>
+
+      <div class="setting-row">
+        <span class="setting-label">👤 Nama Pemain</span>
+        <button class="toggle-switch-btn on" id="btn-edit-username-settings" style="width: auto; padding: 5px 12px;">Ubah</button>
+      </div>
 
       <div class="setting-row">
         <span class="setting-label">🌙 Mode Gelap (Dark Mode)</span>
@@ -378,9 +475,9 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=2.4"></script>
-  <script src="js/icons.js?v=2.4"></script>
-  <script src="js/audio.js?v=2.4"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/onet-engine.js?v=2.5"></script>
+  <script src="js/icons.js?v=2.5"></script>
+  <script src="js/audio.js?v=2.5"></script>
+  <script src="js/app.js?v=2.5"></script>
 </body>
 </html>

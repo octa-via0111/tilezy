@@ -49,6 +49,7 @@
 
   let activeTheme = localStorage.getItem('tilezy_theme') || 'fruits';
   let isDarkMode = localStorage.getItem('tilezy_dark_mode') === 'true';
+  let playerUsername = localStorage.getItem('tilezy_username') || '';
 
   // Game Engine State
   let engine = null;
@@ -110,6 +111,18 @@
   const modalWin = document.getElementById('modal-win');
   const toggleDarkModeSettings = document.getElementById('toggle-dark-mode-settings');
 
+  // Username & Profile Elements
+  const modalUsername = document.getElementById('modal-username');
+  const inputUsername = document.getElementById('input-username');
+  const usernameHelper = document.getElementById('username-helper');
+  const btnSubmitUsername = document.getElementById('btn-submit-username');
+  const btnCloseUsername = document.getElementById('btn-close-username');
+  const btnOpenProfile = document.getElementById('btn-open-profile');
+  const homeUsernameBadge = document.getElementById('home-username-badge');
+  const scoreUsernameDisplay = document.getElementById('score-username-display');
+  const btnEditUsernameScore = document.getElementById('btn-edit-username-score');
+  const btnEditUsernameSettings = document.getElementById('btn-edit-username-settings');
+
   // Confetti Canvas
   const confettiCanvas = document.getElementById('confetti-canvas');
   const confettiCtx = confettiCanvas.getContext('2d');
@@ -140,10 +153,12 @@
     }
 
     applyDarkMode(isDarkMode);
+    updateUsernameDisplay();
     setupDifficultySelector();
     setupTabNavigation();
     setupThemesPage();
     setupModals();
+    setupUsernameModal();
     setupGameControls();
     updateBoosterBadges();
     setupPWA();
@@ -263,10 +278,37 @@
 
     btnHomePlay.addEventListener('click', () => {
       soundController.playClick();
-      currentLevel = 1;
-      currentLevelScore = 0;
-      switchView('game');
+      if (!playerUsername) {
+        openUsernameModal(true);
+      } else {
+        currentLevel = 1;
+        currentLevelScore = 0;
+        switchView('game');
+      }
     });
+
+    if (btnOpenProfile) {
+      btnOpenProfile.addEventListener('click', () => {
+        soundController.playClick();
+        openUsernameModal(false);
+      });
+    }
+
+    if (btnEditUsernameScore) {
+      btnEditUsernameScore.addEventListener('click', () => {
+        soundController.playClick();
+        modalScore.classList.remove('active');
+        openUsernameModal(false);
+      });
+    }
+
+    if (btnEditUsernameSettings) {
+      btnEditUsernameSettings.addEventListener('click', () => {
+        soundController.playClick();
+        modalSettings.classList.remove('active');
+        openUsernameModal(false);
+      });
+    }
 
     btnBackHome.addEventListener('click', () => {
       soundController.playClick();
@@ -741,6 +783,11 @@
     // Launch Confetti Shower!
     startConfettiShower();
 
+    const winTitle = modalWin.querySelector('.modal-title');
+    if (winTitle) {
+      winTitle.textContent = playerUsername ? `HEBAT, ${playerUsername}! 🎉` : 'HEBAT BANGET! 🎉';
+    }
+
     modalWin.classList.add('active');
   }
 
@@ -898,6 +945,124 @@
     document.getElementById('best-easy').textContent = bestScores.easy.toLocaleString();
     document.getElementById('best-medium').textContent = bestScores.medium.toLocaleString();
     document.getElementById('best-hard').textContent = bestScores.hard.toLocaleString();
+    if (scoreUsernameDisplay) {
+      scoreUsernameDisplay.textContent = playerUsername || 'Belum ada';
+    }
+  }
+
+  // ========================================================
+  // USERNAME / PAPAN PERINGKAT LOGIC
+  // ========================================================
+  let startGameAfterUsername = false;
+
+  function openUsernameModal(autoStart = false) {
+    startGameAfterUsername = autoStart;
+    if (inputUsername) {
+      inputUsername.value = playerUsername || '';
+      inputUsername.classList.remove('input-error');
+    }
+    if (usernameHelper) {
+      usernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
+      usernameHelper.classList.remove('error');
+    }
+    if (btnCloseUsername) {
+      btnCloseUsername.style.display = playerUsername ? 'inline-block' : 'none';
+    }
+
+    if (modalUsername) {
+      modalUsername.classList.add('active');
+      setTimeout(() => {
+        if (inputUsername) inputUsername.focus();
+      }, 200);
+    }
+  }
+
+  function validateUsername(val) {
+    val = (val || '').trim();
+    if (val.length < 3) {
+      return { valid: false, message: 'Username terlalu pendek (minimal 3 karakter).' };
+    }
+    if (val.length > 16) {
+      return { valid: false, message: 'Username terlalu panjang (maksimal 16 karakter).' };
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+      return { valid: false, message: 'Hanya boleh berisi huruf, angka, atau garis bawah (_).' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  function handleUsernameSubmit() {
+    if (!inputUsername) return;
+    const rawVal = inputUsername.value.trim();
+    const result = validateUsername(rawVal);
+
+    if (!result.valid) {
+      soundController.playDeadlock();
+      if (usernameHelper) {
+        usernameHelper.textContent = result.message;
+        usernameHelper.classList.add('error');
+      }
+      inputUsername.classList.add('input-error');
+      inputUsername.focus();
+      return;
+    }
+
+    playerUsername = rawVal;
+    localStorage.setItem('tilezy_username', playerUsername);
+    updateUsernameDisplay();
+    soundController.playChime();
+
+    if (modalUsername) {
+      modalUsername.classList.remove('active');
+    }
+
+    if (startGameAfterUsername) {
+      currentLevel = 1;
+      currentLevelScore = 0;
+      switchView('game');
+    }
+  }
+
+  function updateUsernameDisplay() {
+    const displayName = playerUsername ? playerUsername : 'Buat Nama';
+    if (homeUsernameBadge) {
+      homeUsernameBadge.textContent = displayName;
+    }
+    if (scoreUsernameDisplay) {
+      scoreUsernameDisplay.textContent = playerUsername || 'Belum ada';
+    }
+  }
+
+  function setupUsernameModal() {
+    if (btnSubmitUsername) {
+      btnSubmitUsername.addEventListener('click', () => {
+        handleUsernameSubmit();
+      });
+    }
+
+    if (inputUsername) {
+      inputUsername.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleUsernameSubmit();
+        }
+      });
+
+      inputUsername.addEventListener('input', () => {
+        if (usernameHelper) {
+          usernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
+          usernameHelper.classList.remove('error');
+        }
+        inputUsername.classList.remove('input-error');
+      });
+    }
+
+    if (btnCloseUsername) {
+      btnCloseUsername.addEventListener('click', () => {
+        soundController.playClick();
+        if (modalUsername) modalUsername.classList.remove('active');
+      });
+    }
   }
 
   function updateSettingsUI() {
@@ -1027,10 +1192,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2.4')
+        navigator.serviceWorker.register('sw.js?v=2.5')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v2.4!');
+            console.log('Tilezy PWA Ready v2.5!');
           })
           .catch(err => console.log('SW error:', err));
       });
