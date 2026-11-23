@@ -212,7 +212,124 @@ class OnetEngine {
       return candidates[0];
     }
 
+    // 4. Any unobstructed path of empty cells (Multi-turn BFS through open road)
+    // Jika ada jalan kosong yang menghubungkan kedua ubin, ubin bisa dipilih & dihubungkan!
+    return this._findGeneralPath(r1, c1, r2, c2);
+  }
+
+  /**
+   * Ray-casting turn-by-turn BFS for arbitrary open empty paths across board
+   */
+  _findGeneralPath(r1, c1, r2, c2) {
+    const DIRS = [
+      { dr: -1, dc: 0 },
+      { dr: 1, dc: 0 },
+      { dr: 0, dc: -1 },
+      { dr: 0, dc: 1 }
+    ];
+
+    const visited = Array.from({ length: this.paddedRows }, () =>
+      Array.from({ length: this.paddedCols }, () => [Infinity, Infinity, Infinity, Infinity])
+    );
+
+    const queue = [];
+
+    // Cast initial rays in all 4 directions from start (r1, c1)
+    for (let d = 0; d < 4; d++) {
+      const { dr, dc } = DIRS[d];
+      let nr = r1 + dr;
+      let nc = c1 + dc;
+      while (nr >= 0 && nr < this.paddedRows && nc >= 0 && nc < this.paddedCols) {
+        if (nr === r2 && nc === c2) {
+          return [{ r: r1, c: c1 }, { r: r2, c: c2 }];
+        }
+        if (this.board[nr][nc] !== 0) break;
+
+        visited[nr][nc][d] = 0;
+        queue.push({
+          r: nr,
+          c: nc,
+          dir: d,
+          turns: 0,
+          path: [{ r: r1, c: c1 }, { r: nr, c: nc }]
+        });
+
+        nr += dr;
+        nc += dc;
+      }
+    }
+
+    let bestSolution = null;
+
+    while (queue.length > 0) {
+      const cur = queue.shift();
+
+      if (bestSolution && cur.turns >= bestSolution.turns) {
+        continue;
+      }
+
+      for (let nd = 0; nd < 4; nd++) {
+        if (nd === cur.dir) continue;
+        if (DIRS[nd].dr === -DIRS[cur.dir].dr && DIRS[nd].dc === -DIRS[cur.dir].dc) continue;
+
+        const nextTurns = cur.turns + 1;
+        const { dr, dc } = DIRS[nd];
+        let nr = cur.r + dr;
+        let nc = cur.c + dc;
+
+        while (nr >= 0 && nr < this.paddedRows && nc >= 0 && nc < this.paddedCols) {
+          if (nr === r2 && nc === c2) {
+            const finalPath = [...cur.path, { r: r2, c: c2 }];
+            if (!bestSolution || nextTurns < bestSolution.turns ||
+               (nextTurns === bestSolution.turns && this._pathLength(finalPath) < this._pathLength(bestSolution.path))) {
+              bestSolution = { turns: nextTurns, path: finalPath };
+            }
+            break;
+          }
+
+          if (this.board[nr][nc] !== 0) break;
+
+          if (nextTurns < visited[nr][nc][nd]) {
+            visited[nr][nc][nd] = nextTurns;
+            queue.push({
+              r: nr,
+              c: nc,
+              dir: nd,
+              turns: nextTurns,
+              path: [...cur.path, { r: nr, c: nc }]
+            });
+          }
+
+          nr += dr;
+          nc += dc;
+        }
+      }
+    }
+
+    if (bestSolution) {
+      return this._simplifyPath(bestSolution.path);
+    }
+
     return null;
+  }
+
+  _simplifyPath(pts) {
+    if (!pts || pts.length <= 2) return pts;
+    const simplified = [pts[0]];
+    for (let i = 1; i < pts.length - 1; i++) {
+      const prev = simplified[simplified.length - 1];
+      const cur = pts[i];
+      const next = pts[i + 1];
+
+      const isHCollinear = (prev.r === cur.r && cur.r === next.r);
+      const isVCollinear = (prev.c === cur.c && cur.c === next.c);
+
+      if (!isHCollinear && !isVCollinear) {
+        simplified.push(cur);
+      }
+    }
+    simplified.push(pts[pts.length - 1]);
+    return simplified;
   }
 
   _pathLength(path) {

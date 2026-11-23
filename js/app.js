@@ -1548,10 +1548,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.4')
+        navigator.serviceWorker.register('sw.js?v=3.5')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.4 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.5 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
