@@ -717,8 +717,8 @@
   }
 
   function updateHeaderUI() {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty];
-    levelDisplay.textContent = `${cfg.badge} ${cfg.name} · Lv. ${currentLevel}`;
+    const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+    levelDisplay.textContent = `${cfg.name} · Lv. ${currentLevel}`;
     scoreDisplay.textContent = currentLevelScore.toLocaleString();
     if (engine) {
       remainingDisplay.textContent = `${engine.getRemainingCount()} Ubin`;
@@ -1437,31 +1437,42 @@
       });
     }
 
-    btnPause.addEventListener('click', () => {
-      soundController.playClick();
-      isPaused = true;
-      modalPause.classList.add('active');
-    });
+    if (btnPause) {
+      btnPause.addEventListener('click', () => {
+        soundController.playClick();
+        isPaused = true;
+        if (modalPause) modalPause.classList.add('active');
+      });
+    }
 
-    document.getElementById('btn-resume').addEventListener('click', () => {
-      soundController.playClick();
-      isPaused = false;
-      modalPause.classList.remove('active');
-    });
+    const btnResume = document.getElementById('btn-resume');
+    if (btnResume) {
+      btnResume.addEventListener('click', () => {
+        soundController.playClick();
+        isPaused = false;
+        if (modalPause) modalPause.classList.remove('active');
+      });
+    }
 
-    document.getElementById('btn-pause-restart').addEventListener('click', () => {
-      soundController.playClick();
-      modalPause.classList.remove('active');
-      clearSavedGameState();
-      startRound(true);
-    });
+    const btnPauseRestart = document.getElementById('btn-pause-restart');
+    if (btnPauseRestart) {
+      btnPauseRestart.addEventListener('click', () => {
+        soundController.playClick();
+        if (modalPause) modalPause.classList.remove('active');
+        clearSavedGameState();
+        startRound(true);
+      });
+    }
 
-    document.getElementById('btn-pause-home').addEventListener('click', () => {
-      soundController.playClick();
-      modalPause.classList.remove('active');
-      saveGameState();
-      switchView('home');
-    });
+    const btnPauseHome = document.getElementById('btn-pause-home');
+    if (btnPauseHome) {
+      btnPauseHome.addEventListener('click', () => {
+        soundController.playClick();
+        if (modalPause) modalPause.classList.remove('active');
+        saveGameState();
+        switchView('home');
+      });
+    }
 
     document.getElementById('btn-win-replay').addEventListener('click', () => {
       soundController.playClick();
@@ -1537,10 +1548,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.3')
+        navigator.serviceWorker.register('sw.js?v=3.4')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.3 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.4 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });

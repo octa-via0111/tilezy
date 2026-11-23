@@ -333,7 +333,8 @@ body.dark-mode::before {
   max-width: 440px;
   display: flex;
   background: var(--cream-card);
-  border: 2px solid var(--border-soft);
+  border: 1.5px solid var(--border-soft);
+  box-shadow: none;
   border-radius: 18px; /* Lebih kotak, tidak lonjong berlebihan */
   padding: 5px;
   gap: 6px;
@@ -509,10 +510,11 @@ body.dark-mode::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
+  padding: 6px 12px;
   background: var(--cream-card);
-  border-bottom: 2px solid var(--border-soft);
-  gap: 6px;
+  border-bottom: 1.5px solid var(--border-soft);
+  box-shadow: none;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -521,8 +523,9 @@ body.dark-mode::before {
   align-items: center;
   gap: 4px;
   background: var(--cream);
-  border: 1.5px solid var(--border-soft);
-  padding: 4px 10px;
+  border: 1px solid var(--border-soft);
+  box-shadow: none;
+  padding: 5px 10px;
   border-radius: 10px;
   font-weight: 800;
   font-size: 0.82rem;
@@ -540,7 +543,8 @@ body.dark-mode::before {
 
 .btn-icon-soft {
   background: var(--cream);
-  border: 1.5px solid var(--border-soft);
+  border: 1px solid var(--border-soft);
+  box-shadow: none;
   color: var(--plum);
   border-radius: 10px;
   width: 36px;
@@ -654,22 +658,25 @@ body.dark-mode .tile.selected {
 
 @media (max-width: 480px) {
   .game-top-bar {
-    padding: 4px 6px;
-    gap: 3px;
+    padding: 5px 8px;
+    gap: 5px;
+    box-shadow: none;
   }
   .pastel-pill {
-    padding: 4px 6px;
-    font-size: 0.74rem;
-    gap: 2.5px;
+    padding: 4px 7px;
+    font-size: 0.76rem;
+    gap: 3px;
+    box-shadow: none;
   }
   .pastel-pill .icon {
     font-size: 0.85rem;
   }
   .btn-icon-soft {
-    width: 33px;
-    height: 33px;
-    font-size: 0.95rem;
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
     border-radius: 9px;
+    box-shadow: none;
   }
   .game-board-area {
     padding: 2px;
@@ -773,14 +780,15 @@ body.dark-mode .tile.selected {
   100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.9); }
 }
 
-/* Bottom Boosters Toolbar */
+/* Bottom Boosters Toolbar - Flat & Bersih Tanpa Shadow */
 .game-bottom-bar {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 8px 12px 12px;
+  padding: 8px 12px 10px;
   background: var(--cream-card);
-  border-top: 2px solid var(--border-soft);
+  border-top: 1.5px solid var(--border-soft);
+  box-shadow: none;
   flex-shrink: 0;
   gap: 10px;
 }
@@ -791,34 +799,35 @@ body.dark-mode .tile.selected {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 14px; /* Agak kotak */
-  padding: 6px 14px;
-  min-width: 72px;
-  height: 52px;
+  border-radius: 12px;
+  padding: 6px 12px;
+  min-width: 70px;
+  height: 50px;
   cursor: pointer;
-  border: 2px solid var(--border-soft);
+  border: 1.5px solid var(--border-soft);
+  box-shadow: none;
   font-family: var(--font-game);
   font-weight: 800;
   font-size: 0.72rem;
   color: var(--plum);
   background: var(--cream);
-  transition: transform 0.08s;
+  transition: transform 0.08s, background-color 0.15s ease;
 }
 
 .pastel-booster-btn.hint-btn {
   background: var(--lavender-light);
-  border-bottom: 3px solid var(--lavender-dark);
+  border-color: var(--lavender);
 }
 
 .pastel-booster-btn.shuffle-btn {
   background: var(--mint-light);
-  border-bottom: 3px solid var(--mint-dark);
+  border-color: var(--mint);
 }
 
 .pastel-booster-btn.magic-btn {
-  background: var(--butter-dark);
+  background: var(--butter);
   color: #1B1722;
-  border-bottom: 3px solid #D4A937;
+  border-color: var(--butter-dark);
 }
 
 .pastel-booster-btn .b-icon {
@@ -833,20 +842,21 @@ body.dark-mode .tile.selected {
 
 .pastel-booster-btn .badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: -5px;
+  right: -5px;
   background: var(--coral);
   color: #FFFFFF;
-  border: 2px solid #FFFFFF;
-  border-radius: 8px; /* Agak kotak */
-  min-width: 22px;
-  height: 22px;
+  border: 1.5px solid #FFFFFF;
+  border-radius: 7px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 4px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none;
 }
 
 .pastel-booster-btn:active {
