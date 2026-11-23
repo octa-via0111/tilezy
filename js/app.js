@@ -379,11 +379,16 @@
 
     btnHomePlay.addEventListener('click', () => {
       soundController.playClick();
+      // Pastikan ada username default jika belum ada
       if (!playerUsername) {
-        switchView('welcome');
-      } else {
-        switchView('game');
+        playerUsername = 'Pemain';
+        try {
+          localStorage.setItem('tilezy_username', playerUsername);
+        } catch (e) {}
+        updateUsernameDisplay();
       }
+      // LANGSUNG MULAI GAME! Tidak akan pernah kembali ke layar pengisian nama
+      switchView('game');
     });
 
     if (btnOpenProfile) {
@@ -1129,40 +1134,39 @@
   // ========================================================
   // WELCOME SCREEN & USERNAME LOGIC (TAMPILAN AWAL MANDIRI)
   // ========================================================
-  function validateUsername(val) {
-    val = (val || '').trim();
-    if (val.length < 3) {
-      return { valid: false, message: 'Username terlalu pendek (minimal 3 karakter).' };
-    }
-    if (val.length > 16) {
-      return { valid: false, message: 'Username terlalu panjang (maksimal 16 karakter).' };
-    }
-    if (!/^[a-zA-Z0-9_]+$/.test(val)) {
-      return { valid: false, message: 'Hanya boleh berisi huruf, angka, atau garis bawah (_).' };
-    }
-    return { valid: true, message: '' };
-  }
+  let isSubmittingName = false;
 
-  function handleWelcomeSubmit() {
-    if (!inputWelcomeUsername) return;
-    const rawVal = inputWelcomeUsername.value.trim();
-    const result = validateUsername(rawVal);
+  function handleWelcomeSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (isSubmittingName) return;
+    isSubmittingName = true;
+    setTimeout(() => { isSubmittingName = false; }, 300);
 
-    if (!result.valid) {
-      soundController.playDeadlock();
-      if (welcomeUsernameHelper) {
-        welcomeUsernameHelper.textContent = result.message;
-        welcomeUsernameHelper.classList.add('error');
-      }
-      inputWelcomeUsername.classList.add('input-error');
-      inputWelcomeUsername.focus();
-      return;
+    let rawVal = (inputWelcomeUsername ? inputWelcomeUsername.value : '').trim();
+    if (!rawVal) {
+      rawVal = 'Pemain';
+    }
+
+    if (rawVal.length > 20) {
+      rawVal = rawVal.substring(0, 20);
     }
 
     playerUsername = rawVal;
-    localStorage.setItem('tilezy_username', playerUsername);
+    try {
+      localStorage.setItem('tilezy_username', playerUsername);
+    } catch (err) {
+      console.warn('LocalStorage save error:', err);
+    }
+
     updateUsernameDisplay();
-    soundController.playChime();
+
+    try {
+      if (typeof soundController.playChime === 'function') {
+        soundController.playChime();
+      } else {
+        soundController.playClick();
+      }
+    } catch (err) {}
 
     // Masuk ke Menu Utama (view-home)
     switchView('home');
@@ -1179,26 +1183,27 @@
   }
 
   function setupWelcomeScreen() {
-    if (btnWelcomeSubmit) {
-      btnWelcomeSubmit.addEventListener('click', () => {
-        handleWelcomeSubmit();
+    const welcomeForm = document.getElementById('form-welcome-username');
+    if (welcomeForm) {
+      welcomeForm.addEventListener('submit', (e) => {
+        handleWelcomeSubmit(e);
       });
+    }
+
+    if (btnWelcomeSubmit) {
+      btnWelcomeSubmit.addEventListener('click', (e) => {
+        handleWelcomeSubmit(e);
+      });
+      btnWelcomeSubmit.addEventListener('touchend', (e) => {
+        handleWelcomeSubmit(e);
+      }, { passive: true });
     }
 
     if (inputWelcomeUsername) {
       inputWelcomeUsername.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-          e.preventDefault();
-          handleWelcomeSubmit();
+          handleWelcomeSubmit(e);
         }
-      });
-
-      inputWelcomeUsername.addEventListener('input', () => {
-        if (welcomeUsernameHelper) {
-          welcomeUsernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
-          welcomeUsernameHelper.classList.remove('error');
-        }
-        inputWelcomeUsername.classList.remove('input-error');
       });
     }
 
@@ -1346,10 +1351,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2.8')
+        navigator.serviceWorker.register('sw.js?v=3.0')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v2.8 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.0 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });

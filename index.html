@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/style.css?v=2.9">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
 </head>
 <body>
 
@@ -105,7 +105,7 @@
             <h2 class="username-modal-header">Buat nama untuk ditampilkan di papan peringkat</h2>
 
             <!-- Username Input Form Sesuai Gambar User -->
-            <div class="username-form-body">
+            <form id="form-welcome-username" class="username-form-body" onsubmit="return false;">
               <label class="username-label" for="input-welcome-username">Username</label>
               <div class="username-input-wrapper">
                 <input 
@@ -120,14 +120,14 @@
                   autocapitalize="none"
                 />
               </div>
-              <p class="username-helper-text" id="welcome-username-helper">3–16 karakter: huruf, angka, atau garis bawah (_).</p>
-            </div>
-
-            <!-- Action Button Sesuai Gambar User -->
-            <button class="btn-start-play-username" id="btn-welcome-submit">
-              <span>Mulai main</span>
-              <span class="arrow">→</span>
-            </button>
+              <p class="username-helper-text" id="welcome-username-helper">Bisa huruf, angka, atau spasi (mis. Okta, Budi 123)</p>
+              
+              <!-- Action Button Sesuai Gambar User -->
+              <button type="submit" class="btn-start-play-username" id="btn-welcome-submit" style="margin-top: 18px;">
+                <span>Mulai main</span>
+                <span class="arrow">→</span>
+              </button>
+            </form>
           </div>
         </div>
 
@@ -499,9 +499,9 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=2.9"></script>
-  <script src="js/icons.js?v=2.9"></script>
-  <script src="js/audio.js?v=2.9"></script>
-  <script src="js/app.js?v=2.9"></script>
+  <script src="js/onet-engine.js?v=3.0"></script>
+  <script src="js/icons.js?v=3.0"></script>
+  <script src="js/audio.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 </body>
 </html>
