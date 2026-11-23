@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FFF8EF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Tilezy">
+  <meta name="description" content="Tilezy - Game Onet Connect Klasik dengan Tampilan Pastel Nyaman">
+  
+  <title>Tilezy - Cozy Onet Game</title>
+  
+  <!-- Favicon & Icons -->
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css?v=2.1">
+</head>
+<body>
+
+  <div id="game-app">
+    
+    <!-- ========================================================
+         VIEW 1: HOME SCREEN (Judul, 3 Mahjong Tiles, Difficulty, Play)
+         ======================================================== -->
+    <div class="view-screen active" id="view-home">
+      <div class="home-container">
+        
+        <!-- Home Top Row: Dark Mode Toggle -->
+        <div class="home-top-bar-row">
+          <button class="btn-theme-toggle" id="btn-toggle-dark-mode" title="Ubah Mode Gelap/Terang">
+            <span class="mode-icon">🌙</span>
+            <span class="mode-text">Dark</span>
+          </button>
+        </div>
+
+        <!-- App Title Header -->
+        <div class="home-header">
+          <h1 class="app-title">Tilezy</h1>
+          <p class="app-tagline">Hubungkan Ubin Klasik</p>
+        </div>
+
+        <!-- 3 Fanned Mahjong Tiles Art (Blueberries, Candy, Carrot) -->
+        <div class="fanned-tiles-wrapper">
+          <!-- Left: Blueberries -->
+          <div class="fan-tile left">
+            <svg viewBox="0 0 64 64" fill="none">
+              <path d="M42 22C46 16 52 18 54 22C52 26 46 26 42 22Z" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
+              <path d="M22 22C18 16 12 18 10 22C12 26 18 26 22 22Z" fill="#9CD9C8" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="38" r="14" fill="#6B7FD7" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="40" cy="38" r="14" fill="#5869BD" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="32" cy="28" r="13" fill="#8093F1" stroke="currentColor" stroke-width="2.5"/>
+              <polygon points="32,24 33.5,27 36,27 34,29 35,32 32,30 29,32 30,29 28,27 30.5,27" fill="currentColor"/>
+            </svg>
+          </div>
+
+          <!-- Center: Peppermint Candy -->
+          <div class="fan-tile center">
+            <svg viewBox="0 0 64 64" fill="none">
+              <polygon points="12,24 22,32 12,40 8,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
+              <polygon points="52,24 42,32 52,40 56,32" fill="#FFFFFF" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="32" cy="32" r="16" fill="#FFFFFF" stroke="currentColor" stroke-width="3"/>
+              <path d="M32 32 L32 16 A16 16 0 0 1 43 21 Z" fill="#FF8B7B"/>
+              <path d="M32 32 L48 32 A16 16 0 0 1 43 43 Z" fill="#FF8B7B"/>
+              <path d="M32 32 L32 48 A16 16 0 0 1 21 43 Z" fill="#FF8B7B"/>
+              <path d="M32 32 L16 32 A16 16 0 0 1 21 21 Z" fill="#FF8B7B"/>
+              <circle cx="32" cy="32" r="3" fill="#FFFFFF"/>
+            </svg>
+          </div>
+
+          <!-- Right: Carrot -->
+          <div class="fan-tile right">
+            <svg viewBox="0 0 64 64" fill="none">
+              <path d="M32 20C32 12 28 8 26 12M32 20C32 10 32 6 32 10M32 20C32 12 36 8 38 12" stroke="#9CD9C8" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M22 20C22 18 42 18 42 20C42 32 34 52 32 56C30 52 22 32 22 20Z" fill="#FFA96B" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="26" y1="26" x2="33" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="31" y1="34" x2="38" y2="34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Difficulty Selection: Easy, Medium, Hard -->
+        <div class="difficulty-section">
+          <span class="diff-label">Tingkat Kesulitan:</span>
+          <div class="diff-pills">
+            <button class="diff-pill active" data-diff="easy" id="diff-easy">🟢 Mudah</button>
+            <button class="diff-pill" data-diff="medium" id="diff-medium">🟡 Sedang</button>
+            <button class="diff-pill" data-diff="hard" id="diff-hard">🔴 Sulit</button>
+          </div>
+        </div>
+
+        <!-- Big Play Button (Coral #FF8B7B) -->
+        <div class="play-btn-wrapper">
+          <button class="btn-big-play" id="btn-home-play" title="Mulai Bermain">
+            <div class="play-triangle"></div>
+          </button>
+        </div>
+
+        <!-- Bottom Tabs Navigation (Clean Solid Borders) -->
+        <nav class="bottom-tabs-nav">
+          <button class="nav-tab active" id="tab-home">
+            <span class="tab-icon">🏠</span>
+            <span>Home</span>
+          </button>
+          <button class="nav-tab" id="tab-score">
+            <span class="tab-icon">🏆</span>
+            <span>Score</span>
+          </button>
+          <button class="nav-tab" id="tab-themes">
+            <span class="tab-icon">🎨</span>
+            <span>Themes</span>
+          </button>
+          <button class="nav-tab" id="tab-settings">
+            <span class="tab-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- ========================================================
+         VIEW 2: GAMEPLAY SCREEN
+         ======================================================== -->
+    <div class="view-screen" id="view-game">
+      <div class="game-view">
+        
+        <!-- TOP STATUS BAR (No diffuse shadows) -->
+        <header class="game-top-bar">
+          <button class="btn-icon-soft" id="btn-back-home" title="Kembali ke Menu Utama">🏠</button>
+
+          <div class="pastel-pill" id="level-pill" title="Info Level">
+            <span class="icon">⭐</span>
+            <span class="val" id="level-display">Mudah · Lv. 1</span>
+          </div>
+
+          <div class="pastel-pill">
+            <span class="icon">🏆</span>
+            <span class="val" id="score-display">0</span>
+          </div>
+
+          <!-- Timer Bar in Mint / Coral -->
+          <div class="game-timer-wrapper">
+            <div class="timer-text-row">
+              <span>WAKTU</span>
+              <span id="time-text">03:00</span>
+            </div>
+            <div class="pastel-timer-track">
+              <div class="pastel-timer-fill" id="timer-fill"></div>
+            </div>
+          </div>
+
+          <button class="btn-icon-soft" id="btn-pause" title="Jeda Permainan">⏸️</button>
+        </header>
+
+        <!-- GAMEPLAY BOARD -->
+        <main class="game-board-area" id="board-area">
+          <div class="game-board-card" id="board-container">
+            <!-- Connecting Line Canvas -->
+            <canvas id="line-canvas"></canvas>
+
+            <!-- Tiles Grid -->
+            <div class="game-grid" id="tile-grid"></div>
+
+            <!-- Floating Score & Combo Texts -->
+            <div class="floating-text-layer" id="float-layer"></div>
+          </div>
+        </main>
+
+        <!-- BOTTOM BOOSTER TOOLBAR (Clean border) -->
+        <footer class="game-bottom-bar">
+          <button class="pastel-booster-btn hint-btn" id="btn-hint" title="Bantuan Pasangan">
+            <span class="badge" id="hint-count">3</span>
+            <span class="b-icon">💡</span>
+            <span class="b-text">BANTUAN</span>
+          </button>
+
+          <button class="pastel-booster-btn shuffle-btn" id="btn-shuffle" title="Acak Posisi Ubin">
+            <span class="badge" id="shuffle-count">3</span>
+            <span class="b-icon">🔀</span>
+            <span class="b-text">ACAK</span>
+          </button>
+
+          <button class="pastel-booster-btn time-btn" id="btn-time-plus" title="Tambah Waktu +15 Detik">
+            <span class="badge" id="time-count">2</span>
+            <span class="b-icon">⏱️</span>
+            <span class="b-text">+15 DETIK</span>
+          </button>
+
+          <button class="pastel-booster-btn" id="btn-theme-quick" title="Ganti Tema">
+            <span class="b-icon" id="quick-theme-icon">🍬</span>
+            <span class="b-text">TEMA</span>
+          </button>
+        </footer>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PWA INSTALL BANNER -->
+  <div class="install-banner" id="pwa-install-banner" style="display: none;">
+    <span style="font-size: 1.4rem;">📲</span>
+    <span class="text">Install Tilezy di HP (Bisa Offline)</span>
+    <button class="close-banner" id="btn-close-install">✕</button>
+  </div>
+
+  <!-- MODAL: SCORE & TROPHY -->
+  <div class="modal-overlay" id="modal-score">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title">REKOR TERBAIK 🏆</h2>
+      <p class="modal-subtitle">Pencapaian skor tertinggi Anda di Tilezy</p>
+
+      <div class="stats-card-box" style="flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 800; color: var(--mint-dark);">🟢 Mudah (Easy)</span>
+          <span style="font-weight: 900;" id="best-easy">0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 800; color: var(--butter-dark);">🟡 Sedang (Medium)</span>
+          <span style="font-weight: 900;" id="best-medium">0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 800; color: var(--coral-dark);">🔴 Sulit (Hard)</span>
+          <span style="font-weight: 900;" id="best-hard">0</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-pastel" id="btn-close-score">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: THEMES SELECTION (Dynamic 5 Themes) -->
+  <div class="modal-overlay" id="modal-themes">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title">PILIH TEMA 🎨</h2>
+      <p class="modal-subtitle">Pilih tema ikon yang Anda sukai</p>
+
+      <div class="theme-options" id="themes-container"></div>
+
+      <div class="modal-actions">
+        <button class="btn-pastel" id="btn-close-themes">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SETTINGS -->
+  <div class="modal-overlay" id="modal-settings">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title">PENGATURAN ⚙️</h2>
+      <p class="modal-subtitle">Atur suara dan mode tampilan</p>
+
+      <div class="setting-row">
+        <span class="setting-label">🌙 Mode Gelap (Dark Mode)</span>
+        <button class="toggle-switch-btn" id="toggle-dark-mode-settings">OFF</button>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">🔊 Efek Suara (SFX)</span>
+        <button class="toggle-switch-btn on" id="toggle-sfx">ON</button>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">🎵 Musik Santai (BGM)</span>
+        <button class="toggle-switch-btn" id="toggle-music">OFF</button>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 14px;">
+        <button class="btn-pastel" id="btn-close-settings">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PAUSE -->
+  <div class="modal-overlay" id="modal-pause">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title">GAME DIJEDA ⏸️</h2>
+      <p class="modal-subtitle">Santai sejenak, ubin siap dilanjutkan!</p>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+        <button class="btn-pastel" id="btn-resume">Lanjutkan Main ▶</button>
+        <button class="btn-pastel btn-secondary" id="btn-pause-restart">Ulangi Level Ini 🔄</button>
+        <button class="btn-pastel btn-secondary" id="btn-pause-home">Kembali ke Menu 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: LEVEL WIN -->
+  <div class="modal-overlay" id="modal-win">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title" style="color: var(--mint-dark);">BERHASIL! 🎉</h2>
+      <p class="modal-subtitle">Semua ubin terhubung dengan sempurna!</p>
+
+      <div class="star-rating" id="win-stars">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+      </div>
+
+      <div class="stats-card-box">
+        <div class="stat-item">
+          <span class="label">SKOR LEVEL</span>
+          <span class="value" id="win-score">+0</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">SISA WAKTU</span>
+          <span class="value" id="win-time">0s</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">TOTAL SKOR</span>
+          <span class="value" id="win-total">0</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-pastel btn-secondary" id="btn-win-replay">🔄 Ulang</button>
+        <button class="btn-pastel" id="btn-win-next">Lanjut ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GAME OVER -->
+  <div class="modal-overlay" id="modal-gameover">
+    <div class="pastel-modal-card">
+      <h2 class="modal-title" style="color: var(--coral-dark);">WAKTU HABIS! ⏰</h2>
+      <p class="modal-subtitle">Tetap semangat, coba sekali lagi!</p>
+
+      <div class="stats-card-box">
+        <div class="stat-item">
+          <span class="label">SKOR ANDA</span>
+          <span class="value" id="gameover-score">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">SISA UBIN</span>
+          <span class="value" id="gameover-remaining">0</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-pastel btn-secondary" id="btn-gameover-home">Menu Utama</button>
+        <button class="btn-pastel" id="btn-gameover-retry">Coba Lagi 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/onet-engine.js?v=2.1"></script>
+  <script src="js/icons.js?v=2.1"></script>
+  <script src="js/audio.js?v=2.1"></script>
+  <script src="js/app.js?v=2.1"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "onet-classic-game",
+  "version": "1.0.0",
+  "description": "Game Onet Klasik Hubungkan Pasangan - JavaScript & PWA",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "serve": "npx serve -l 8080 .",
+    "dev": "npx live-server ."
+  },
+  "keywords": ["onet", "game", "pwa", "javascript"],
+  "author": "",
+  "license": "MIT"
+}
