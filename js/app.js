@@ -732,9 +732,9 @@
     const rCount = engine.rows;
     const cCount = engine.cols;
 
-    // Available board area inside container (with margin safety)
-    const availWidth = Math.max(180, boardArea.clientWidth - 16);
-    const availHeight = Math.max(180, boardArea.clientHeight - 16);
+    // Sediakan ruang bernapas aman 28-36px untuk lintasan garis luar di sekeliling papan
+    const availWidth = Math.max(180, boardArea.clientWidth - 32);
+    const availHeight = Math.max(180, boardArea.clientHeight - 32);
 
     const gap = cCount >= 10 ? 2 : 3;
 
@@ -751,13 +751,13 @@
   }
 
   function updateCanvasSize() {
-    const rect = boardContainer.getBoundingClientRect();
+    const rect = boardArea.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    lineCanvas.width = rect.width * dpr;
-    lineCanvas.height = rect.height * dpr;
+    lineCanvas.width = Math.round(rect.width * dpr);
+    lineCanvas.height = Math.round(rect.height * dpr);
     lineCanvas.style.width = `${rect.width}px`;
     lineCanvas.style.height = `${rect.height}px`;
-    canvasCtx.scale(dpr, dpr);
+    canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   // Render DOM Tiles from Engine
@@ -897,16 +897,19 @@
     }, 240);
   }
 
-  // Draw connecting beam
+  // Draw connecting beam (Garis penghubung ubin menyala utuh tanpa terpotong)
   function drawConnectingPath(path) {
     clearCanvas();
     if (!path || path.length < 2) return;
 
     const coords = path.map(pt => getPixelCoordForGridCell(pt.r, pt.c));
 
+    // 1. Lapisan luar bercahaya lembut (Outer Glow Halo)
     canvasCtx.save();
-    canvasCtx.strokeStyle = '#FFD66B';
-    canvasCtx.lineWidth = 6;
+    canvasCtx.shadowColor = '#FFD66B';
+    canvasCtx.shadowBlur = 8;
+    canvasCtx.strokeStyle = '#FFE082';
+    canvasCtx.lineWidth = 7;
     canvasCtx.lineCap = 'round';
     canvasCtx.lineJoin = 'round';
 
@@ -918,9 +921,10 @@
     canvasCtx.stroke();
     canvasCtx.restore();
 
+    // 2. Garis inti coral terang (Vibrant Inner Core Beam)
     canvasCtx.save();
-    canvasCtx.strokeStyle = '#FF8B7B';
-    canvasCtx.lineWidth = 2.5;
+    canvasCtx.strokeStyle = '#FF6B6B';
+    canvasCtx.lineWidth = 3;
     canvasCtx.lineCap = 'round';
     canvasCtx.lineJoin = 'round';
 
@@ -930,70 +934,110 @@
       canvasCtx.lineTo(coords[i].x, coords[i].y);
     }
     canvasCtx.stroke();
+    canvasCtx.restore();
 
+    // 3. Titik simpul di setiap belokan & ujung garis (Node Joints)
     coords.forEach(pt => {
-      canvasCtx.fillStyle = '#FF8B7B';
+      canvasCtx.save();
+      canvasCtx.fillStyle = '#FF6B6B';
       canvasCtx.beginPath();
-      canvasCtx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+      canvasCtx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
       canvasCtx.fill();
+
+      canvasCtx.fillStyle = '#FFFFFF';
+      canvasCtx.beginPath();
+      canvasCtx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
+      canvasCtx.fill();
+      canvasCtx.restore();
     });
-    canvasCtx.restore();
   }
 
   function clearCanvas() {
+    canvasCtx.save();
+    canvasCtx.setTransform(1, 0, 0, 1, 0, 0);
     canvasCtx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
+    canvasCtx.restore();
   }
 
   function getPixelCoordForGridCell(r, c) {
     const rMax = engine ? engine.rows : (DIFFICULTY_CONFIG[currentDifficulty]?.rows || 8);
     const cMax = engine ? engine.cols : (DIFFICULTY_CONFIG[currentDifficulty]?.cols || 8);
-    const containerRect = boardContainer.getBoundingClientRect();
-    const gridRect = tileGrid.getBoundingClientRect();
+    const canvasRect = lineCanvas.getBoundingClientRect();
 
-    const gridOffsetX = gridRect.left - containerRect.left;
-    const gridOffsetY = gridRect.top - containerRect.top;
-
-    let x = 0;
-    let y = 0;
-
+    // Jika sel berada di dalam papan ubin (1 <= r <= rMax && 1 <= c <= cMax)
     if (r >= 1 && r <= rMax && c >= 1 && c <= cMax) {
       const tileEl = getTileEl(r, c);
       if (tileEl) {
         const tRect = tileEl.getBoundingClientRect();
-        x = (tRect.left + tRect.width / 2) - containerRect.left;
-        y = (tRect.top + tRect.height / 2) - containerRect.top;
-        return { x, y };
+        return {
+          x: (tRect.left + tRect.width / 2) - canvasRect.left,
+          y: (tRect.top + tRect.height / 2) - canvasRect.top
+        };
       }
     }
 
-    const gap = cMax >= 10 ? 2 : 3;
-    const cellStep = tileSize + gap;
+    // Ambil batas koordinat ubin sudut pertama (1,1) dan terakhir (rMax, cMax)
+    const firstTile = getTileEl(1, 1);
+    const lastTile = getTileEl(rMax, cMax);
 
+    let firstX = 24, firstY = 24, lastX = canvasRect.width - 24, lastY = canvasRect.height - 24;
+    if (firstTile && lastTile) {
+      const fRect = firstTile.getBoundingClientRect();
+      const lRect = lastTile.getBoundingClientRect();
+      firstX = (fRect.left + fRect.width / 2) - canvasRect.left;
+      firstY = (fRect.top + fRect.height / 2) - canvasRect.top;
+      lastX = (lRect.left + lRect.width / 2) - canvasRect.left;
+      lastY = (lRect.top + lRect.height / 2) - canvasRect.top;
+    }
+
+    const halfTile = tileSize / 2;
+    const leftEdge = firstX - halfTile;
+    const rightEdge = lastX + halfTile;
+    const topEdge = firstY - halfTile;
+    const bottomEdge = lastY + halfTile;
+
+    // Jarak lintasan luar (di luar sisi ubin, namun tetap di dalam canvas & layar)
+    const laneDistX = Math.max(8, Math.min(18, Math.round((leftEdge - 4) * 0.75)));
+    const laneDistY = Math.max(10, Math.min(22, Math.round((topEdge - 4) * 0.85)));
+
+    let x = 0;
+    let y = 0;
+
+    // Hitung koordinat X
     if (c === 0) {
-      x = gridOffsetX - 11;
+      // Lintasan luar sebelah kiri
+      x = Math.max(5, leftEdge - laneDistX);
     } else if (c > cMax) {
-      x = gridOffsetX + gridRect.width + 11;
+      // Lintasan luar sebelah kanan
+      x = Math.min(canvasRect.width - 5, rightEdge + laneDistX);
     } else {
-      const refColTile = getTileEl(1, c);
-      if (refColTile) {
-        const tRect = refColTile.getBoundingClientRect();
-        x = (tRect.left + tRect.width / 2) - containerRect.left;
+      // Sejajar kolom c
+      const colTile = getTileEl(1, c) || getTileEl(Math.min(rMax, Math.max(1, r)), c);
+      if (colTile) {
+        const tRect = colTile.getBoundingClientRect();
+        x = (tRect.left + tRect.width / 2) - canvasRect.left;
       } else {
-        x = gridOffsetX + ((c - 1) * cellStep) + (tileSize / 2);
+        const step = (lastX - firstX) / Math.max(1, cMax - 1);
+        x = firstX + (c - 1) * step;
       }
     }
 
+    // Hitung koordinat Y
     if (r === 0) {
-      y = gridOffsetY - 11;
+      // Lintasan luar sebelah atas
+      y = Math.max(5, topEdge - laneDistY);
     } else if (r > rMax) {
-      y = gridOffsetY + gridRect.height + 11;
+      // Lintasan luar sebelah bawah
+      y = Math.min(canvasRect.height - 5, bottomEdge + laneDistY);
     } else {
-      const refRowTile = getTileEl(r, 1);
-      if (refRowTile) {
-        const tRect = refRowTile.getBoundingClientRect();
-        y = (tRect.top + tRect.height / 2) - containerRect.top;
+      // Sejajar baris r
+      const rowTile = getTileEl(r, 1) || getTileEl(r, Math.min(cMax, Math.max(1, c)));
+      if (rowTile) {
+        const tRect = rowTile.getBoundingClientRect();
+        y = (tRect.top + tRect.height / 2) - canvasRect.top;
       } else {
-        y = gridOffsetY + ((r - 1) * cellStep) + (tileSize / 2);
+        const step = (lastY - firstY) / Math.max(1, rMax - 1);
+        y = firstY + (r - 1) * step;
       }
     }
 
@@ -1493,10 +1537,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.2')
+        navigator.serviceWorker.register('sw.js?v=3.3')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.2 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.3 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });

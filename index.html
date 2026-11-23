@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css?v=3.2">
+  <link rel="stylesheet" href="css/style.css?v=3.3">
 </head>
 
 <body>
@@ -320,15 +320,15 @@
         <!-- GAMEPLAY BOARD -->
         <main class="game-board-area" id="board-area">
           <div class="game-board-card" id="board-container">
-            <!-- Connecting Line Canvas -->
-            <canvas id="line-canvas"></canvas>
-
             <!-- Tiles Grid -->
             <div class="game-grid" id="tile-grid"></div>
 
             <!-- Floating Score & Combo Texts -->
             <div class="floating-text-layer" id="float-layer"></div>
           </div>
+
+          <!-- Connecting Line Canvas (Covers entire board area so outer edge lines are never clipped) -->
+          <canvas id="line-canvas"></canvas>
         </main>
 
         <!-- BOTTOM BOOSTER TOOLBAR -->
@@ -523,10 +523,10 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=3.2"></script>
-  <script src="js/icons.js?v=3.2"></script>
-  <script src="js/audio.js?v=3.2"></script>
-  <script src="js/app.js?v=3.2"></script>
+  <script src="js/onet-engine.js?v=3.3"></script>
+  <script src="js/icons.js?v=3.3"></script>
+  <script src="js/audio.js?v=3.3"></script>
+  <script src="js/app.js?v=3.3"></script>
 </body>
 
 </html>
