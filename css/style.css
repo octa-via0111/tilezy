@@ -1125,6 +1125,67 @@ body.dark-mode .pwa-icon-box {
 }
 
 /* ========================================================
+   VIEW 0: WELCOME SCREEN (TAMPILAN AWAL MANDIRI)
+   ======================================================== */
+#view-welcome {
+  background: var(--cream);
+  z-index: 20;
+}
+
+body.dark-mode #view-welcome {
+  background: #1B1722;
+}
+
+.welcome-screen-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px 20px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.welcome-top-bar {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-center-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 440px;
+  padding: 10px 0;
+}
+
+.welcome-card-box {
+  width: 100%;
+  max-width: 380px;
+  background: var(--cream-card);
+  border: 2px solid var(--border-soft);
+  border-radius: 20px; /* Agak kotak modern */
+  padding: 26px 20px 22px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(72, 61, 82, 0.08);
+}
+
+body.dark-mode .welcome-card-box {
+  background: #252030;
+  border-color: #383046;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ========================================================
    USERNAME / PAPAN PERINGKAT MODAL & LOGO
    ======================================================== */
 .user-profile-pill {

@@ -64,9 +64,17 @@
   let previousView = 'home';
 
   // DOM Views
+  const viewWelcome = document.getElementById('view-welcome');
   const viewHome = document.getElementById('view-home');
   const viewThemesPage = document.getElementById('view-themes-page');
   const viewGame = document.getElementById('view-game');
+
+  // DOM Elements - Welcome Screen
+  const btnToggleDarkWelcome = document.getElementById('btn-toggle-dark-welcome');
+  const btnWelcomeBack = document.getElementById('btn-welcome-back');
+  const inputWelcomeUsername = document.getElementById('input-welcome-username');
+  const welcomeUsernameHelper = document.getElementById('welcome-username-helper');
+  const btnWelcomeSubmit = document.getElementById('btn-welcome-submit');
 
   // DOM Elements - Home
   const diffPills = document.querySelectorAll('.diff-pill');
@@ -111,12 +119,7 @@
   const modalWin = document.getElementById('modal-win');
   const toggleDarkModeSettings = document.getElementById('toggle-dark-mode-settings');
 
-  // Username & Profile Elements
-  const modalUsername = document.getElementById('modal-username');
-  const inputUsername = document.getElementById('input-username');
-  const usernameHelper = document.getElementById('username-helper');
-  const btnSubmitUsername = document.getElementById('btn-submit-username');
-  const btnCloseUsername = document.getElementById('btn-close-username');
+  // Profile Elements
   const btnOpenProfile = document.getElementById('btn-open-profile');
   const homeUsernameBadge = document.getElementById('home-username-badge');
   const scoreUsernameDisplay = document.getElementById('score-username-display');
@@ -150,6 +153,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('new') || urlParams.has('reset')) {
       resetAllGameData(false);
+      playerUsername = '';
+      localStorage.removeItem('tilezy_username');
     }
 
     applyDarkMode(isDarkMode);
@@ -158,7 +163,7 @@
     setupTabNavigation();
     setupThemesPage();
     setupModals();
-    setupUsernameModal();
+    setupWelcomeScreen();
     setupGameControls();
     updateBoosterBadges();
     setupPWA();
@@ -166,13 +171,11 @@
     setupSwipeToBack();
     setupOfflineDetection();
 
-    // Munculkan formulir nama sebelum bermain jika pemain belum memiliki username
+    // Tampilan awal: jika belum memiliki username, tampilkan view-welcome yang mandiri
     if (!playerUsername) {
-      setTimeout(() => {
-        if (viewHome.classList.contains('active')) {
-          openUsernameModal(true);
-        }
-      }, 500);
+      switchView('welcome', false);
+    } else {
+      switchView('home', false);
     }
 
     window.addEventListener('resize', handleResize);
@@ -207,18 +210,25 @@
     document.body.classList.toggle('dark-mode', isDarkMode);
     localStorage.setItem('tilezy_dark_mode', isDarkMode);
 
-    const icon = btnToggleDarkMode.querySelector('.mode-icon');
-    const text = btnToggleDarkMode.querySelector('.mode-text');
-    if (isDarkMode) {
-      if (icon) icon.textContent = '☀️';
-      if (text) text.textContent = 'Light';
-      toggleDarkModeSettings.textContent = 'ON';
-      toggleDarkModeSettings.classList.add('on');
-    } else {
-      if (icon) icon.textContent = '🌙';
-      if (text) text.textContent = 'Dark';
-      toggleDarkModeSettings.textContent = 'OFF';
-      toggleDarkModeSettings.classList.remove('on');
+    const updateToggleBtn = (btn) => {
+      if (!btn) return;
+      const icon = btn.querySelector('.mode-icon');
+      const text = btn.querySelector('.mode-text');
+      if (icon) icon.textContent = isDarkMode ? '☀️' : '🌙';
+      if (text) text.textContent = isDarkMode ? 'Light' : 'Dark';
+    };
+
+    updateToggleBtn(btnToggleDarkMode);
+    updateToggleBtn(btnToggleDarkWelcome);
+
+    if (toggleDarkModeSettings) {
+      if (isDarkMode) {
+        toggleDarkModeSettings.textContent = 'ON';
+        toggleDarkModeSettings.classList.add('on');
+      } else {
+        toggleDarkModeSettings.textContent = 'OFF';
+        toggleDarkModeSettings.classList.remove('on');
+      }
     }
   }
 
@@ -243,21 +253,38 @@
 
   let currentActiveView = 'home';
 
-  // View Switcher (home, themes, game) dengan dukungan History API
+  // View Switcher (welcome, home, themes, game) dengan dukungan History API
   function switchView(viewName, updateHistory = true) {
-    if (viewName === currentActiveView && document.querySelector(`.view-screen.active#view-${viewName === 'themes' ? 'themes-page' : viewName}`)) {
-      return;
-    }
-
     const fromView = currentActiveView;
     currentActiveView = viewName;
 
-    [viewHome, viewThemesPage, viewGame].forEach(v => v.classList.remove('active'));
+    // Bersihkan status aktif dari semua view screen
+    [viewWelcome, viewHome, viewThemesPage, viewGame].forEach(v => {
+      if (v) v.classList.remove('active');
+    });
 
-    if (viewName === 'game') {
+    if (viewName === 'welcome') {
+      if (pwaBanner) pwaBanner.style.display = 'none';
+      if (viewWelcome) viewWelcome.classList.add('active');
+      if (inputWelcomeUsername) {
+        inputWelcomeUsername.value = playerUsername || '';
+        inputWelcomeUsername.classList.remove('input-error');
+        setTimeout(() => inputWelcomeUsername.focus(), 250);
+      }
+      if (welcomeUsernameHelper) {
+        welcomeUsernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
+        welcomeUsernameHelper.classList.remove('error');
+      }
+      if (btnWelcomeBack) {
+        btnWelcomeBack.style.display = playerUsername ? 'inline-flex' : 'none';
+      }
+      if (updateHistory) {
+        history.pushState({ view: 'welcome' }, '', '#welcome');
+      }
+    } else if (viewName === 'game') {
       if (pwaBanner) pwaBanner.style.display = 'none';
       previousView = fromView === 'themes' ? (previousView || 'home') : 'home';
-      viewGame.classList.add('active');
+      if (viewGame) viewGame.classList.add('active');
       startRound();
       if (updateHistory) {
         history.pushState({ view: 'game' }, '', '#game');
@@ -266,14 +293,15 @@
       if (pwaBanner) pwaBanner.style.display = 'none';
       previousView = fromView === 'themes' ? (previousView || 'home') : fromView;
       renderThemesPage();
-      viewThemesPage.classList.add('active');
+      if (viewThemesPage) viewThemesPage.classList.add('active');
       if (updateHistory) {
         history.pushState({ view: 'themes' }, '', '#themes');
       }
     } else {
       currentActiveView = 'home';
-      viewHome.classList.add('active');
+      if (viewHome) viewHome.classList.add('active');
       updateBestScoresDisplay();
+      updateUsernameDisplay();
       setActiveTab(tabHome);
       showInstallBanner();
       if (updateHistory && window.location.hash) {
@@ -286,14 +314,25 @@
   function navigateBack() {
     soundController.playClick();
 
-    // 1. Jika ada modal yang aktif (Username, Score, Settings, Pause), tutup modalnya terlebih dahulu
+    // 1. Jika ada modal yang aktif (Score, Settings, Pause, Win), tutup modalnya terlebih dahulu
     const activeModal = document.querySelector('.modal-overlay.active');
     if (activeModal) {
       activeModal.classList.remove('active');
       return;
     }
 
-    // 2. Jika di halaman tema, kembali ke halaman sebelumnya (Home atau Game)
+    // 2. Jika di tampilan welcome (dan pemain sudah punya nama sebelumnya), kembali ke home
+    if (currentActiveView === 'welcome') {
+      if (playerUsername) {
+        switchView('home', false);
+        if (window.location.hash) {
+          history.replaceState({ view: 'home' }, '', window.location.pathname);
+        }
+      }
+      return;
+    }
+
+    // 3. Jika di halaman tema, kembali ke halaman sebelumnya (Home atau Game)
     if (currentActiveView === 'themes') {
       const targetView = previousView || 'home';
       switchView(targetView, false);
@@ -303,7 +342,7 @@
       return;
     }
 
-    // 3. Jika di arena game, kembali ke menu utama
+    // 4. Jika di arena game, kembali ke menu utama
     if (currentActiveView === 'game') {
       switchView('home', false);
       if (window.location.hash) {
@@ -340,14 +379,17 @@
 
     btnHomePlay.addEventListener('click', () => {
       soundController.playClick();
-      // Selalu munculkan form input nama sebelum mulai bermain
-      openUsernameModal(true);
+      if (!playerUsername) {
+        switchView('welcome');
+      } else {
+        switchView('game');
+      }
     });
 
     if (btnOpenProfile) {
       btnOpenProfile.addEventListener('click', () => {
         soundController.playClick();
-        openUsernameModal(false);
+        switchView('welcome');
       });
     }
 
@@ -355,7 +397,7 @@
       btnEditUsernameScore.addEventListener('click', () => {
         soundController.playClick();
         modalScore.classList.remove('active');
-        openUsernameModal(false);
+        switchView('welcome');
       });
     }
 
@@ -363,7 +405,7 @@
       btnEditUsernameSettings.addEventListener('click', () => {
         soundController.playClick();
         modalSettings.classList.remove('active');
-        openUsernameModal(false);
+        switchView('welcome');
       });
     }
 
@@ -484,7 +526,9 @@
 
       const stateView = (e.state && e.state.view) || (window.location.hash ? window.location.hash.replace('#', '') : 'home');
 
-      if (stateView === 'themes') {
+      if (stateView === 'welcome') {
+        switchView('welcome', false);
+      } else if (stateView === 'themes') {
         switchView('themes', false);
       } else if (stateView === 'game') {
         switchView('game', false);
@@ -1083,32 +1127,8 @@
   }
 
   // ========================================================
-  // USERNAME / PAPAN PERINGKAT LOGIC
+  // WELCOME SCREEN & USERNAME LOGIC (TAMPILAN AWAL MANDIRI)
   // ========================================================
-  let startGameAfterUsername = false;
-
-  function openUsernameModal(autoStart = false) {
-    startGameAfterUsername = autoStart;
-    if (inputUsername) {
-      inputUsername.value = playerUsername || '';
-      inputUsername.classList.remove('input-error');
-    }
-    if (usernameHelper) {
-      usernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
-      usernameHelper.classList.remove('error');
-    }
-    if (btnCloseUsername) {
-      btnCloseUsername.style.display = playerUsername ? 'inline-block' : 'none';
-    }
-
-    if (modalUsername) {
-      modalUsername.classList.add('active');
-      setTimeout(() => {
-        if (inputUsername) inputUsername.focus();
-      }, 200);
-    }
-  }
-
   function validateUsername(val) {
     val = (val || '').trim();
     if (val.length < 3) {
@@ -1123,19 +1143,19 @@
     return { valid: true, message: '' };
   }
 
-  function handleUsernameSubmit() {
-    if (!inputUsername) return;
-    const rawVal = inputUsername.value.trim();
+  function handleWelcomeSubmit() {
+    if (!inputWelcomeUsername) return;
+    const rawVal = inputWelcomeUsername.value.trim();
     const result = validateUsername(rawVal);
 
     if (!result.valid) {
       soundController.playDeadlock();
-      if (usernameHelper) {
-        usernameHelper.textContent = result.message;
-        usernameHelper.classList.add('error');
+      if (welcomeUsernameHelper) {
+        welcomeUsernameHelper.textContent = result.message;
+        welcomeUsernameHelper.classList.add('error');
       }
-      inputUsername.classList.add('input-error');
-      inputUsername.focus();
+      inputWelcomeUsername.classList.add('input-error');
+      inputWelcomeUsername.focus();
       return;
     }
 
@@ -1144,15 +1164,8 @@
     updateUsernameDisplay();
     soundController.playChime();
 
-    if (modalUsername) {
-      modalUsername.classList.remove('active');
-    }
-
-    if (startGameAfterUsername) {
-      currentLevel = 1;
-      currentLevelScore = 0;
-      switchView('game');
-    }
+    // Masuk ke Menu Utama (view-home)
+    switchView('home');
   }
 
   function updateUsernameDisplay() {
@@ -1165,34 +1178,43 @@
     }
   }
 
-  function setupUsernameModal() {
-    if (btnSubmitUsername) {
-      btnSubmitUsername.addEventListener('click', () => {
-        handleUsernameSubmit();
+  function setupWelcomeScreen() {
+    if (btnWelcomeSubmit) {
+      btnWelcomeSubmit.addEventListener('click', () => {
+        handleWelcomeSubmit();
       });
     }
 
-    if (inputUsername) {
-      inputUsername.addEventListener('keydown', (e) => {
+    if (inputWelcomeUsername) {
+      inputWelcomeUsername.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          handleUsernameSubmit();
+          handleWelcomeSubmit();
         }
       });
 
-      inputUsername.addEventListener('input', () => {
-        if (usernameHelper) {
-          usernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
-          usernameHelper.classList.remove('error');
+      inputWelcomeUsername.addEventListener('input', () => {
+        if (welcomeUsernameHelper) {
+          welcomeUsernameHelper.textContent = '3–16 karakter: huruf, angka, atau garis bawah (_).';
+          welcomeUsernameHelper.classList.remove('error');
         }
-        inputUsername.classList.remove('input-error');
+        inputWelcomeUsername.classList.remove('input-error');
       });
     }
 
-    if (btnCloseUsername) {
-      btnCloseUsername.addEventListener('click', () => {
+    if (btnToggleDarkWelcome) {
+      btnToggleDarkWelcome.addEventListener('click', () => {
         soundController.playClick();
-        if (modalUsername) modalUsername.classList.remove('active');
+        toggleDarkMode();
+      });
+    }
+
+    if (btnWelcomeBack) {
+      btnWelcomeBack.addEventListener('click', () => {
+        soundController.playClick();
+        if (playerUsername) {
+          switchView('home');
+        }
       });
     }
   }
