@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/style.css?v=3.1">
 </head>
 <body>
 
@@ -126,6 +126,11 @@
               <button type="submit" class="btn-start-play-username" id="btn-welcome-submit" style="margin-top: 18px;">
                 <span>Mulai main</span>
                 <span class="arrow">→</span>
+              </button>
+
+              <!-- Tombol Keluar / Logout Profil -->
+              <button type="button" class="btn-welcome-logout" id="btn-welcome-logout" style="display: none;" title="Keluar dari profil ini">
+                <span>🚪 Keluar Profil</span>
               </button>
             </form>
           </div>
@@ -360,7 +365,10 @@
 
       <div class="player-profile-badge-row">
         <span>👤 Pemain: <strong id="score-username-display">Belum ada</strong></span>
-        <button class="btn-text-edit" id="btn-edit-username-score">✏️ Ubah</button>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-text-edit" id="btn-edit-username-score">✏️ Ubah</button>
+          <button class="btn-text-edit" id="btn-logout-score" style="color: #E86452;" title="Keluar dari profil">🚪 Keluar</button>
+        </div>
       </div>
 
       <div class="stats-card-box" style="flex-direction: column; gap: 10px;">
@@ -392,7 +400,10 @@
 
       <div class="setting-row">
         <span class="setting-label">👤 Nama Pemain</span>
-        <button class="toggle-switch-btn on" id="btn-edit-username-settings" style="width: auto; padding: 5px 12px;">Ubah</button>
+        <div style="display: flex; gap: 6px;">
+          <button class="toggle-switch-btn on" id="btn-edit-username-settings" style="width: auto; padding: 5px 12px;">Ubah</button>
+          <button class="toggle-switch-btn" id="btn-logout-settings" style="background: #E86452; color: #FFFFFF; width: auto; padding: 5px 12px;" title="Keluar dari profil">Keluar</button>
+        </div>
       </div>
 
       <div class="setting-row">
@@ -499,9 +510,9 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=3.0"></script>
-  <script src="js/icons.js?v=3.0"></script>
-  <script src="js/audio.js?v=3.0"></script>
-  <script src="js/app.js?v=3.0"></script>
+  <script src="js/onet-engine.js?v=3.1"></script>
+  <script src="js/icons.js?v=3.1"></script>
+  <script src="js/audio.js?v=3.1"></script>
+  <script src="js/app.js?v=3.1"></script>
 </body>
 </html>

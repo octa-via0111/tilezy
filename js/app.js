@@ -72,6 +72,7 @@
   // DOM Elements - Welcome Screen
   const btnToggleDarkWelcome = document.getElementById('btn-toggle-dark-welcome');
   const btnWelcomeBack = document.getElementById('btn-welcome-back');
+  const btnWelcomeLogout = document.getElementById('btn-welcome-logout');
   const inputWelcomeUsername = document.getElementById('input-welcome-username');
   const welcomeUsernameHelper = document.getElementById('welcome-username-helper');
   const btnWelcomeSubmit = document.getElementById('btn-welcome-submit');
@@ -124,7 +125,9 @@
   const homeUsernameBadge = document.getElementById('home-username-badge');
   const scoreUsernameDisplay = document.getElementById('score-username-display');
   const btnEditUsernameScore = document.getElementById('btn-edit-username-score');
+  const btnLogoutScore = document.getElementById('btn-logout-score');
   const btnEditUsernameSettings = document.getElementById('btn-edit-username-settings');
+  const btnLogoutSettings = document.getElementById('btn-logout-settings');
 
   // Confetti Canvas
   const confettiCanvas = document.getElementById('confetti-canvas');
@@ -278,6 +281,9 @@
       if (btnWelcomeBack) {
         btnWelcomeBack.style.display = playerUsername ? 'inline-flex' : 'none';
       }
+      if (btnWelcomeLogout) {
+        btnWelcomeLogout.style.display = playerUsername ? 'flex' : 'none';
+      }
       if (updateHistory) {
         history.pushState({ view: 'welcome' }, '', '#welcome');
       }
@@ -406,11 +412,23 @@
       });
     }
 
+    if (btnLogoutScore) {
+      btnLogoutScore.addEventListener('click', () => {
+        handleLogout();
+      });
+    }
+
     if (btnEditUsernameSettings) {
       btnEditUsernameSettings.addEventListener('click', () => {
         soundController.playClick();
         modalSettings.classList.remove('active');
         switchView('welcome');
+      });
+    }
+
+    if (btnLogoutSettings) {
+      btnLogoutSettings.addEventListener('click', () => {
+        handleLogout();
       });
     }
 
@@ -1222,6 +1240,38 @@
         }
       });
     }
+
+    if (btnWelcomeLogout) {
+      btnWelcomeLogout.addEventListener('click', () => {
+        handleLogout();
+      });
+    }
+  }
+
+  // Logout / Keluar Profil
+  function handleLogout() {
+    soundController.playClick();
+    const nameToLogout = playerUsername || 'Pemain';
+    if (confirm(`Apakah Anda yakin ingin keluar dari profil "${nameToLogout}"?`)) {
+      playerUsername = '';
+      try {
+        localStorage.removeItem('tilezy_username');
+      } catch (e) {}
+
+      updateUsernameDisplay();
+
+      // Tutup semua modal jika ada yang terbuka
+      if (modalSettings) modalSettings.classList.remove('active');
+      if (modalScore) modalScore.classList.remove('active');
+
+      // Kembali ke layar welcome untuk buat nama baru
+      switchView('welcome');
+
+      if (inputWelcomeUsername) {
+        inputWelcomeUsername.value = '';
+        setTimeout(() => inputWelcomeUsername.focus(), 250);
+      }
+    }
   }
 
   function updateSettingsUI() {
@@ -1351,10 +1401,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.0')
+        navigator.serviceWorker.register('sw.js?v=3.1')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.0 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.1 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });

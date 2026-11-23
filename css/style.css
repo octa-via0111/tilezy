@@ -1319,6 +1319,42 @@ body.dark-mode .username-input-field {
   filter: brightness(1.05);
 }
 
+.btn-welcome-logout {
+  width: 100%;
+  margin-top: 10px;
+  background: transparent;
+  color: #E86452;
+  border: 1.5px dashed rgba(232, 100, 82, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: var(--font-game);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-welcome-logout:hover,
+.btn-welcome-logout:active {
+  background: rgba(232, 100, 82, 0.08);
+  border-color: #E86452;
+  transform: translateY(1px);
+}
+
+body.dark-mode .btn-welcome-logout {
+  color: #FF8B7B;
+  border-color: rgba(255, 139, 123, 0.35);
+}
+
+body.dark-mode .btn-welcome-logout:hover,
+body.dark-mode .btn-welcome-logout:active {
+  background: rgba(255, 139, 123, 0.12);
+}
+
 .btn-start-play-username:active {
   transform: translateY(2px);
 }
