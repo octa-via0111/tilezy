@@ -164,6 +164,7 @@
     setupPWA();
     setupPullToRefresh();
     setupSwipeToBack();
+    setupOfflineDetection();
 
     // Munculkan formulir nama sebelum bermain jika pemain belum memiliki username
     if (!playerUsername) {
@@ -1323,10 +1324,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2.7')
+        navigator.serviceWorker.register('sw.js?v=2.8')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v2.7!');
+            console.log('Tilezy PWA Ready v2.8 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
@@ -1401,6 +1402,35 @@
         isInstallDismissed = true;
         sessionStorage.setItem('tilezy_pwa_dismissed', 'true');
       });
+    }
+  }
+
+  // Deteksi Status Online / Offline & Konfirmasi Data Aman
+  function setupOfflineDetection() {
+    const toast = document.getElementById('offline-toast');
+    if (!toast) return;
+
+    function handleStatusChange() {
+      if (!navigator.onLine) {
+        toast.textContent = '📶 Mode Offline · Skor & Data Tetap Aman!';
+        toast.style.background = 'var(--plum)';
+        toast.style.display = 'flex';
+      } else {
+        toast.textContent = '🟢 Kembali Online';
+        toast.style.background = 'var(--mint-dark)';
+        toast.style.display = 'flex';
+        setTimeout(() => {
+          if (navigator.onLine) toast.style.display = 'none';
+        }, 2200);
+      }
+    }
+
+    window.addEventListener('online', handleStatusChange);
+    window.addEventListener('offline', handleStatusChange);
+
+    // Cek status saat pertama buka
+    if (!navigator.onLine) {
+      handleStatusChange();
     }
   }
 

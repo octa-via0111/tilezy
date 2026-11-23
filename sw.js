@@ -1,10 +1,10 @@
 /**
  * Service Worker for Tilezy PWA
- * Auto-update & immediate refresh cache strategy
+ * 100% Offline Gameplay & Persistent Cache Strategy (v2.8)
  */
 
-const CACHE_NAME = 'tilezy-pastel-v2.7';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'tilezy-pastel-v2.8';
+const CORE_ASSETS = [
   './',
   './index.html',
   './css/style.css',
@@ -18,23 +18,25 @@ const ASSETS_TO_CACHE = [
   './icons/icon-512.png'
 ];
 
+// 1. INSTALL: Precache all essential game assets for offline play
 self.addEventListener('install', (event) => {
-  // Langsung aktifkan Service Worker baru tanpa menunggu penutupan tab
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      console.log('[Tilezy SW] Precaching core assets for 100% offline play...');
+      return cache.addAll(CORE_ASSETS);
     })
   );
 });
 
+// 2. ACTIVATE: Claim clients immediately and clean up any old cache versions
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[SW] Menghapus cache lama:', key);
+            console.log('[Tilezy SW] Clearing obsolete cache:', key);
             return caches.delete(key);
           }
         })
@@ -43,55 +45,71 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// 3. FETCH: Smart Network-First when online, Guaranteed Cache Fallback when offline
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // Network First untuk HTML navigasi: Selalu ambil versi terbaru dari Vercel saat online
-  if (event.request.mode === 'navigate' || url.pathname.endsWith('index.html') || url.pathname === '/') {
+  // A. Navigation requests (Opening the app, refreshing, direct link, hash routes)
+  if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then((networkRes) => {
           if (networkRes && networkRes.status === 200) {
             const copy = networkRes.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
           return networkRes;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(async () => {
+          // OFFLINE: Kembalikan index.html dari cache agar game tetap bisa dibuka saat tanpa internet!
+          const match = await caches.match(event.request, { ignoreSearch: true });
+          if (match) return match;
+          const indexCached = await caches.match('./index.html', { ignoreSearch: true })
+            || await caches.match('index.html', { ignoreSearch: true })
+            || await caches.match('./');
+          return indexCached;
+        })
     );
     return;
   }
 
-  // Network First untuk file CSS & JS: Selalu periksa update kode terbaru
-  if (url.pathname.endsWith('.css') || url.pathname.endsWith('.js')) {
+  // B. Google Fonts caching (agar font tetap estetik saat offline)
+  if (url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com')) {
     event.respondWith(
-      fetch(event.request)
-        .then((networkRes) => {
-          if (networkRes && networkRes.status === 200) {
-            const copy = networkRes.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
-          }
-          return networkRes;
-        })
-        .catch(() => caches.match(event.request))
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request)
+          .then((networkRes) => {
+            if (networkRes && networkRes.status === 200) {
+              const copy = networkRes.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+            }
+            return networkRes;
+          })
+          .catch(() => cached);
+      })
     );
     return;
   }
 
-  // Cache First untuk aset gambar & font (hemat bandwidth)
+  // C. App Assets (CSS, JS, SVG, PNG, manifest, dll.)
+  // Coba ambil versi online terbaru; jika offline, gunakan cache lokal (ignoreSearch: true)
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request).then((networkRes) => {
+    fetch(event.request)
+      .then((networkRes) => {
         if (networkRes && networkRes.status === 200) {
           const copy = networkRes.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         }
         return networkRes;
-      }).catch(() => cached);
-
-      return cached || fetchPromise;
-    })
+      })
+      .catch(async () => {
+        // Fallback offline: abaikan parameter ?v=... agar selalu cocok dengan aset yang dicache
+        const cached = await caches.match(event.request, { ignoreSearch: true });
+        if (cached) return cached;
+        return caches.match(url.pathname, { ignoreSearch: true });
+      })
   );
 });
