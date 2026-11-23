@@ -819,15 +819,27 @@
 
     const prevEl = getTileEl(selectedTile.r, selectedTile.c);
 
+    // Jika memilih 2 ubin yang BERBEDA jenis: getarkan ubin & picu efek getar salah
     if (engine.board[r][c] !== engine.board[selectedTile.r][selectedTile.c]) {
-      if (prevEl) prevEl.classList.remove('selected');
-      selectedTile = { r, c };
-      clickedEl.classList.add('selected');
-      soundController.playSelect();
+      soundController.playWrong();
+      soundController.vibrate([60, 40, 60]);
+
+      if (prevEl) {
+        prevEl.classList.remove('selected');
+        prevEl.classList.add('shake');
+      }
+      clickedEl.classList.add('shake');
+
+      setTimeout(() => {
+        if (prevEl) prevEl.classList.remove('shake');
+        clickedEl.classList.remove('shake');
+      }, 380);
+
+      selectedTile = null;
       return;
     }
 
-    // Same type -> Check Path
+    // Ubin sama jenis -> Cek Jalur Jalan Kosong
     const path = engine.findPath(selectedTile.r, selectedTile.c, r, c);
 
     if (path) {
@@ -835,12 +847,15 @@
       clickedEl.classList.add('selected');
       executeMatch(selectedTile, { r, c }, path);
     } else {
+      // Ubin sama jenis tetapi terhalang ubin lain
       soundController.playWrong();
-      soundController.vibrate(50);
+      soundController.vibrate([60, 40, 60]);
+      if (prevEl) prevEl.classList.add('shake');
       clickedEl.classList.add('shake');
       setTimeout(() => {
+        if (prevEl) prevEl.classList.remove('shake');
         clickedEl.classList.remove('shake');
-      }, 400);
+      }, 380);
     }
   }
 
@@ -1548,10 +1563,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.5')
+        navigator.serviceWorker.register('sw.js?v=3.6')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.5 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.6 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });

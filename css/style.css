@@ -706,14 +706,17 @@ body.dark-mode .tile.selected {
 }
 
 .tile.shake {
-  animation: tileShake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: tileShake 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: #FF5252 !important;
+  box-shadow: 0 0 10px rgba(255, 82, 82, 0.5) !important;
+  z-index: 6;
 }
 
 @keyframes tileShake {
-  10%, 90% { transform: translate3d(-2px, 0, 0); }
-  20%, 80% { transform: translate3d(3px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
-  40%, 60% { transform: translate3d(3px, 0, 0); }
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
 .tile.clearing {
