@@ -3,7 +3,7 @@
  * Auto-update & immediate refresh cache strategy
  */
 
-const CACHE_NAME = 'tilezy-pastel-v2.5';
+const CACHE_NAME = 'tilezy-pastel-v2.6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

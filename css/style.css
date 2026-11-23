@@ -402,6 +402,8 @@ body.dark-mode::before {
   display: flex;
   flex-direction: column;
   align-items: center;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .themes-cards-grid {

@@ -163,6 +163,7 @@
     updateBoosterBadges();
     setupPWA();
     setupPullToRefresh();
+    setupSwipeToBack();
 
     window.addEventListener('resize', handleResize);
   }
@@ -230,24 +231,75 @@
     });
   }
 
-  // View Switcher (home, themes, game)
-  function switchView(viewName) {
+  let currentActiveView = 'home';
+
+  // View Switcher (home, themes, game) dengan dukungan History API
+  function switchView(viewName, updateHistory = true) {
+    if (viewName === currentActiveView && document.querySelector(`.view-screen.active#view-${viewName === 'themes' ? 'themes-page' : viewName}`)) {
+      return;
+    }
+
+    const fromView = currentActiveView;
+    currentActiveView = viewName;
+
     [viewHome, viewThemesPage, viewGame].forEach(v => v.classList.remove('active'));
 
     if (viewName === 'game') {
       if (pwaBanner) pwaBanner.style.display = 'none';
-      previousView = 'home';
+      previousView = fromView === 'themes' ? (previousView || 'home') : 'home';
       viewGame.classList.add('active');
       startRound();
+      if (updateHistory) {
+        history.pushState({ view: 'game' }, '', '#game');
+      }
     } else if (viewName === 'themes') {
       if (pwaBanner) pwaBanner.style.display = 'none';
+      previousView = fromView === 'themes' ? (previousView || 'home') : fromView;
       renderThemesPage();
       viewThemesPage.classList.add('active');
+      if (updateHistory) {
+        history.pushState({ view: 'themes' }, '', '#themes');
+      }
     } else {
+      currentActiveView = 'home';
       viewHome.classList.add('active');
       updateBestScoresDisplay();
       setActiveTab(tabHome);
       showInstallBanner();
+      if (updateHistory && window.location.hash) {
+        history.pushState({ view: 'home' }, '', window.location.pathname);
+      }
+    }
+  }
+
+  // Navigasi Kembali (Digunakan oleh tombol back, swipe gesture, & popstate)
+  function navigateBack() {
+    soundController.playClick();
+
+    // 1. Jika ada modal yang aktif (Username, Score, Settings, Pause), tutup modalnya terlebih dahulu
+    const activeModal = document.querySelector('.modal-overlay.active');
+    if (activeModal) {
+      activeModal.classList.remove('active');
+      return;
+    }
+
+    // 2. Jika di halaman tema, kembali ke halaman sebelumnya (Home atau Game)
+    if (currentActiveView === 'themes') {
+      const targetView = previousView || 'home';
+      switchView(targetView, false);
+      if (window.location.hash) {
+        history.replaceState({ view: targetView }, '', targetView === 'home' ? window.location.pathname : '#' + targetView);
+      }
+      return;
+    }
+
+    // 3. Jika di arena game, kembali ke menu utama
+    if (currentActiveView === 'game') {
+      switchView('home', false);
+      if (window.location.hash) {
+        history.replaceState({ view: 'home' }, '', window.location.pathname);
+      }
+      return;
     }
   }
 
@@ -311,8 +363,7 @@
     }
 
     btnBackHome.addEventListener('click', () => {
-      soundController.playClick();
-      switchView('home');
+      navigateBack();
     });
 
     btnToggleDarkMode.addEventListener('click', () => {
@@ -326,8 +377,7 @@
     });
 
     btnBackThemes.addEventListener('click', () => {
-      soundController.playClick();
-      switchView(previousView);
+      navigateBack();
     });
   }
 
@@ -365,6 +415,83 @@
         window.location.reload();
       }
     }, { passive: true });
+  }
+
+  // Setup Gesture Swipe-to-Back di Layar HP
+  function setupSwipeToBack() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isSwiping = false;
+
+    // Pasang listener di halaman Tema dan Game
+    const targets = [viewThemesPage, viewGame];
+
+    targets.forEach(target => {
+      if (!target) return;
+
+      target.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchStartTime = Date.now();
+          isSwiping = true;
+        }
+      }, { passive: true });
+
+      target.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = currentX - touchStartX;
+        const diffY = currentY - touchStartY;
+
+        // Jika menggeser ke kiri atau dominan vertikal (scroll ke atas/bawah), batalkan swipe back
+        if (diffX < -10 || Math.abs(diffY) > Math.abs(diffX) * 1.1) {
+          isSwiping = false;
+        }
+      }, { passive: true });
+
+      target.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        const duration = Date.now() - touchStartTime;
+        isSwiping = false;
+
+        // Gestur swipe ke kanan (geser dari kiri ke kanan minimal 50px dalam waktu wajar)
+        if (diffX > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.1 && duration < 500) {
+          navigateBack();
+        }
+      }, { passive: true });
+    });
+
+    // Handle Browser Popstate (tombol back fisik HP atau swipe gesture sistem Android/iOS)
+    window.addEventListener('popstate', (e) => {
+      const activeModal = document.querySelector('.modal-overlay.active');
+      if (activeModal) {
+        activeModal.classList.remove('active');
+        history.pushState({ view: currentActiveView }, '', currentActiveView === 'home' ? window.location.pathname : '#' + currentActiveView);
+        return;
+      }
+
+      const stateView = (e.state && e.state.view) || (window.location.hash ? window.location.hash.replace('#', '') : 'home');
+
+      if (stateView === 'themes') {
+        switchView('themes', false);
+      } else if (stateView === 'game') {
+        switchView('game', false);
+      } else {
+        switchView('home', false);
+      }
+    });
+
+    // Set initial history state
+    if (!window.location.hash) {
+      history.replaceState({ view: 'home' }, '', window.location.pathname);
+    }
   }
 
   function setActiveTab(activeEl) {
@@ -1192,10 +1319,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2.5')
+        navigator.serviceWorker.register('sw.js?v=2.6')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v2.5!');
+            console.log('Tilezy PWA Ready v2.6!');
           })
           .catch(err => console.log('SW error:', err));
       });
