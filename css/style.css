@@ -32,9 +32,6 @@
   --font-game: 'Fredoka', 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ========================================================
-   DARK MODE
-   ======================================================== */
 body.dark-mode {
   --cream: #1B1722;
   --cream-card: #25202E;
@@ -53,21 +50,19 @@ body.dark-mode {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
 }
 
 html, body {
   width: 100%;
+  min-height: 100%;
   height: 100%;
-  overflow: hidden;
   background-color: var(--cream);
   font-family: var(--font-game);
   color: var(--plum);
-  position: fixed;
   transition: background-color 0.25s ease, color 0.25s ease;
+  overscroll-behavior-y: auto; /* Memungkinkan pull-to-refresh di Chrome HP */
 }
 
-/* Subtle hand-crafted speckles without blurry AI gradients */
 body::before {
   content: '';
   position: absolute;
@@ -96,9 +91,7 @@ body.dark-mode::before {
   z-index: 1;
 }
 
-/* ========================================================
-   VIEW 1: HOME SCREEN
-   ======================================================== */
+/* Screen Transitions */
 .view-screen {
   position: absolute;
   inset: 0;
@@ -116,29 +109,35 @@ body.dark-mode::before {
   transform: scale(1);
 }
 
+/* ========================================================
+   VIEW 1: HOME SCREEN
+   ======================================================== */
 .home-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 14px;
+  padding: 16px 18px 14px;
   text-align: center;
+  overflow-y: auto;
+  overscroll-behavior-y: auto; /* Memungkinkan pull-to-refresh alami di HP */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Home Header & Dark Mode Toggle */
 .home-top-bar-row {
   width: 100%;
   max-width: 440px;
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .btn-theme-toggle {
   background: var(--cream-card);
   border: 2px solid var(--border-soft);
   color: var(--plum);
-  border-radius: 20px;
+  border-radius: 12px; /* Lebih kotak/soft-rectangle */
   padding: 6px 12px;
   font-family: var(--font-game);
   font-weight: 800;
@@ -154,7 +153,7 @@ body.dark-mode::before {
 }
 
 .home-header {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .app-title {
@@ -189,7 +188,7 @@ body.dark-mode::before {
   height: 100px;
   background: var(--tile-bg);
   border: 2px solid var(--border-soft);
-  border-radius: 14px;
+  border-radius: 12px; /* Lebih kotak */
   border-bottom: 5px solid var(--mahjong-base);
   display: flex;
   align-items: center;
@@ -231,14 +230,14 @@ body.dark-mode::before {
 .fan-tile.center { --rot: 0deg; }
 .fan-tile.right { --rot: 13deg; }
 
-/* Difficulty Selector */
+/* Difficulty Selector - Soft-Rectangle (Agak kotak sedikit) */
 .difficulty-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin: 4px 0;
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
 }
 
 .diff-label {
@@ -253,7 +252,7 @@ body.dark-mode::before {
   display: flex;
   background: var(--cream-card);
   border: 2px solid var(--border-soft);
-  border-radius: 24px;
+  border-radius: 14px; /* Sudut agak kotak, bukan lonjong bulat penuh */
   padding: 4px;
   gap: 4px;
 }
@@ -262,8 +261,8 @@ body.dark-mode::before {
   flex: 1;
   border: none;
   background: transparent;
-  padding: 8px 6px;
-  border-radius: 18px;
+  padding: 9px 6px;
+  border-radius: 10px; /* Agak kotak */
   font-family: var(--font-game);
   font-weight: 800;
   font-size: 0.85rem;
@@ -287,9 +286,9 @@ body.dark-mode::before {
   color: #FFFFFF;
 }
 
-/* Big Coral Play Button - Clean tactile button without diffuse AI blur */
+/* Big Coral Play Button */
 .play-btn-wrapper {
-  margin: 8px 0 12px;
+  margin: 6px 0 10px;
 }
 
 .btn-big-play {
@@ -324,14 +323,14 @@ body.dark-mode::before {
   transform: translateY(3px) scale(0.98);
 }
 
-/* BOTTOM NAVIGATION TABS - Clean solid borders, NO diffuse shadows */
+/* Bottom Navigation Tabs - Soft Rectangle (Agak kotak sedikit) */
 .bottom-tabs-nav {
   width: 100%;
   max-width: 440px;
   display: flex;
   background: var(--cream-card);
   border: 2px solid var(--border-soft);
-  border-radius: 28px;
+  border-radius: 18px; /* Lebih kotak, tidak lonjong berlebihan */
   padding: 5px;
   gap: 6px;
 }
@@ -345,7 +344,7 @@ body.dark-mode::before {
   padding: 8px 6px;
   border: none;
   background: transparent;
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: var(--font-game);
   color: var(--plum-muted);
@@ -366,7 +365,130 @@ body.dark-mode::before {
 }
 
 /* ========================================================
-   VIEW 2: GAMEPLAY SCREEN
+   VIEW 2: DEDICATED THEMES PAGE
+   ======================================================== */
+.themes-page-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--cream);
+  overflow: hidden;
+}
+
+.page-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--cream-card);
+  border-bottom: 2px solid var(--border-soft);
+  gap: 12px;
+}
+
+.page-header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--plum);
+}
+
+.themes-grid-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.themes-cards-grid {
+  width: 100%;
+  max-width: 440px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.theme-card-box {
+  background: var(--cream-card);
+  border: 2px solid var(--border-soft);
+  border-radius: 16px; /* Agak kotak */
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s ease, border-color 0.1s;
+}
+
+.theme-card-box:active {
+  transform: scale(0.97);
+}
+
+.theme-card-box.active {
+  border-color: var(--coral);
+  background: var(--plum-light);
+}
+
+.theme-badge-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: var(--plum);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.theme-preview-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  width: 100%;
+  max-width: 120px;
+}
+
+.mini-preview-tile {
+  background: var(--tile-bg);
+  border: 1.5px solid var(--border-soft);
+  border-bottom: 3px solid var(--mahjong-base);
+  border-radius: 8px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+}
+
+.mini-preview-tile svg {
+  width: 85%;
+  height: 85%;
+}
+
+.theme-select-indicator {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--plum-muted);
+  border: 1.5px solid var(--border-soft);
+}
+
+.theme-card-box.active .theme-select-indicator {
+  background: var(--coral);
+  color: #FFFFFF;
+  border-color: var(--coral-dark);
+}
+
+/* ========================================================
+   VIEW 3: GAMEPLAY SCREEN (No timer, pure calm puzzle)
    ======================================================== */
 .game-view {
   flex: 1;
@@ -377,7 +499,6 @@ body.dark-mode::before {
   overflow: hidden;
 }
 
-/* Top Status Bar - Flat & Clean, NO diffuse shadows */
 .game-top-bar {
   display: flex;
   align-items: center;
@@ -396,7 +517,7 @@ body.dark-mode::before {
   background: var(--cream);
   border: 2px solid var(--border-soft);
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 12px; /* Agak kotak */
   font-weight: 800;
   font-size: 0.85rem;
   color: var(--plum);
@@ -410,55 +531,11 @@ body.dark-mode::before {
   color: var(--plum);
 }
 
-/* Timer Section */
-.game-timer-wrapper {
-  flex: 1;
-  max-width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.timer-text-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--plum-muted);
-}
-
-.pastel-timer-track {
-  height: 12px;
-  background: var(--plum-light);
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid var(--border-soft);
-}
-
-.pastel-timer-fill {
-  height: 100%;
-  width: 100%;
-  background: var(--mint);
-  border-radius: 8px;
-  transition: width 0.25s linear;
-}
-
-.pastel-timer-fill.danger {
-  background: var(--coral);
-  animation: timerAlert 0.45s infinite alternate;
-}
-
-@keyframes timerAlert {
-  from { opacity: 0.7; }
-  to { opacity: 1; }
-}
-
 .btn-icon-soft {
   background: var(--cream);
   border: 2px solid var(--border-soft);
   color: var(--plum);
-  border-radius: 14px;
+  border-radius: 12px; /* Agak kotak */
   width: 38px;
   height: 38px;
   display: flex;
@@ -473,7 +550,7 @@ body.dark-mode::before {
   transform: translateY(2px);
 }
 
-/* Board Area & Container - Clean border, NO diffuse blur */
+/* Board Area */
 .game-board-area {
   flex: 1;
   position: relative;
@@ -488,14 +565,13 @@ body.dark-mode::before {
   position: relative;
   background: var(--cream-card);
   border: 3px solid var(--border-soft);
-  border-radius: 22px;
+  border-radius: 18px; /* Agak kotak */
   padding: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Dynamic Grid */
 .game-grid {
   display: grid;
   gap: 4px;
@@ -503,12 +579,12 @@ body.dark-mode::before {
   z-index: 2;
 }
 
-/* MAHJONG TILES (Solid base, clean crisp borders) */
+/* Mahjong Tiles */
 .tile {
   position: relative;
   background: var(--tile-bg);
   border: 2px solid var(--border-soft);
-  border-radius: 11px;
+  border-radius: 10px; /* Agak kotak */
   border-bottom: 4px solid var(--mahjong-base);
   display: flex;
   align-items: center;
@@ -537,7 +613,6 @@ body.dark-mode::before {
   border-bottom-color: transparent;
 }
 
-/* Selected Tile */
 .tile.selected {
   background: var(--plum-light);
   border-color: var(--coral);
@@ -552,7 +627,6 @@ body.dark-mode::before {
   100% { transform: translateY(-4px) scale(1.08); }
 }
 
-/* Hinted Tile */
 .tile.hinted {
   border-color: var(--lavender);
   border-bottom-color: var(--lavender-dark);
@@ -583,7 +657,6 @@ body.dark-mode::before {
   z-index: 10;
 }
 
-/* Connecting Laser Line Canvas */
 #line-canvas {
   position: absolute;
   top: 0;
@@ -594,7 +667,6 @@ body.dark-mode::before {
   z-index: 10;
 }
 
-/* Floating Combo & Score Layer */
 .floating-text-layer {
   position: absolute;
   inset: 0;
@@ -620,8 +692,8 @@ body.dark-mode::before {
   transform: translateX(-50%) scale(0.6);
   background: var(--coral);
   color: #FFFFFF;
-  padding: 6px 18px;
-  border-radius: 20px;
+  padding: 6px 16px;
+  border-radius: 12px; /* Agak kotak */
   font-size: 1.15rem;
   font-weight: 900;
   border: 2px solid #FFFFFF;
@@ -642,7 +714,7 @@ body.dark-mode::before {
   100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.9); }
 }
 
-/* Bottom Boosters Toolbar - Clean solid border, NO diffuse shadow */
+/* Bottom Boosters Toolbar */
 .game-bottom-bar {
   display: flex;
   align-items: center;
@@ -660,9 +732,9 @@ body.dark-mode::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
+  border-radius: 14px; /* Agak kotak */
   padding: 6px 14px;
-  min-width: 70px;
+  min-width: 72px;
   height: 52px;
   cursor: pointer;
   border: 2px solid var(--border-soft);
@@ -684,9 +756,10 @@ body.dark-mode::before {
   border-bottom: 3px solid var(--mint-dark);
 }
 
-.pastel-booster-btn.time-btn {
-  background: var(--coral-light);
-  border-bottom: 3px solid var(--coral-dark);
+.pastel-booster-btn.magic-btn {
+  background: var(--butter-dark);
+  color: #1B1722;
+  border-bottom: 3px solid #D4A937;
 }
 
 .pastel-booster-btn .b-icon {
@@ -706,7 +779,7 @@ body.dark-mode::before {
   background: var(--coral);
   color: #FFFFFF;
   border: 2px solid #FFFFFF;
-  border-radius: 12px;
+  border-radius: 8px; /* Agak kotak */
   min-width: 22px;
   height: 22px;
   padding: 0 4px;
@@ -728,7 +801,7 @@ body.dark-mode::before {
 }
 
 /* ========================================================
-   MODALS - Clean card, NO diffuse blur shadows
+   MODALS & CUTE VICTORY CELEBRATION ANIMATION
    ======================================================== */
 .modal-overlay {
   position: fixed;
@@ -752,7 +825,7 @@ body.dark-mode::before {
 .pastel-modal-card {
   background: var(--cream-card);
   border: 3px solid var(--border-soft);
-  border-radius: 26px;
+  border-radius: 20px; /* Agak kotak */
   padding: 22px 18px;
   width: 100%;
   max-width: 380px;
@@ -777,6 +850,28 @@ body.dark-mode::before {
   font-size: 0.88rem;
   font-weight: 600;
   margin-bottom: 14px;
+}
+
+/* Cute Mascot Celebration for Level Complete */
+.mascot-celebration {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 10px;
+  animation: mascotDance 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes mascotDance {
+  0% { transform: translateY(0) rotate(-6deg) scale(1); }
+  50% { transform: translateY(-12px) rotate(0deg) scale(1.08); }
+  100% { transform: translateY(0) rotate(6deg) scale(1); }
+}
+
+/* Confetti canvas */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
 }
 
 .star-rating {
@@ -806,7 +901,7 @@ body.dark-mode::before {
 .stats-card-box {
   background: var(--cream);
   border: 2px solid var(--border-soft);
-  border-radius: 18px;
+  border-radius: 14px; /* Agak kotak */
   padding: 12px 14px;
   margin-bottom: 16px;
   display: flex;
@@ -842,7 +937,7 @@ body.dark-mode::before {
   background: var(--coral);
   border: 2px solid var(--coral-dark);
   color: #FFFFFF;
-  border-radius: 16px;
+  border-radius: 12px; /* Agak kotak */
   padding: 11px 14px;
   font-family: var(--font-game);
   font-size: 0.95rem;
@@ -865,47 +960,6 @@ body.dark-mode::before {
   transform: translateY(2px);
 }
 
-/* THEMES SELECTION - 5 Rich Themes Grid */
-.theme-options {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  margin: 10px 0 16px;
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 2px;
-}
-
-.theme-card {
-  background: var(--cream);
-  border: 2px solid var(--border-soft);
-  border-radius: 16px;
-  padding: 10px 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-weight: 800;
-  font-size: 0.9rem;
-  color: var(--plum);
-  transition: all 0.15s;
-}
-
-.theme-card .preview-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.theme-card .theme-preview {
-  font-size: 1.5rem;
-}
-
-.theme-card.active {
-  border-color: var(--coral);
-  background: var(--plum-light);
-}
-
 /* SETTINGS ROW */
 .setting-row {
   display: flex;
@@ -914,7 +968,7 @@ body.dark-mode::before {
   padding: 11px 14px;
   background: var(--cream);
   border: 2px solid var(--border-soft);
-  border-radius: 16px;
+  border-radius: 14px; /* Agak kotak */
   margin-bottom: 8px;
 }
 
@@ -931,7 +985,7 @@ body.dark-mode::before {
   background: var(--plum-light);
   border: 2px solid var(--border-soft);
   color: var(--plum-muted);
-  border-radius: 14px;
+  border-radius: 10px; /* Agak kotak */
   padding: 5px 12px;
   font-family: var(--font-game);
   font-weight: 800;
@@ -944,34 +998,126 @@ body.dark-mode::before {
   color: #1B1722;
 }
 
-/* PWA INSTALL BANNER */
-.install-banner {
+/* ========================================================
+   PWA INSTALL CARD (SESUAI GAMBAR REFERENSI USER)
+   ======================================================== */
+.pwa-install-banner-wrapper {
   position: fixed;
-  bottom: 80px;
+  bottom: 82px;
   left: 50%;
   transform: translateX(-50%);
+  width: calc(100% - 28px);
+  max-width: 440px;
+  z-index: 95;
+  display: flex;
+  justify-content: center;
+  animation: bannerSlideUp 0.3s ease;
+}
+
+@keyframes bannerSlideUp {
+  from { opacity: 0; transform: translate(-50%, 15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.pwa-install-card {
+  width: 100%;
   background: var(--cream-card);
-  border: 2px solid var(--coral);
-  border-radius: 28px;
-  padding: 8px 16px;
+  border: 2px solid var(--border-soft);
+  border-radius: 18px; /* Agak kotak, modern */
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  z-index: 90;
-  cursor: pointer;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(72, 61, 82, 0.08);
 }
 
-.install-banner .text {
+.pwa-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px; /* Agak kotak */
+  background: #FFF1EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid #FFD6CE;
+}
+
+body.dark-mode .pwa-icon-box {
+  background: #382B35;
+  border-color: #523B4C;
+}
+
+.pwa-icon-box svg {
+  width: 24px;
+  height: 24px;
+  color: var(--coral);
+}
+
+.pwa-text-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-width: 0;
+}
+
+.pwa-title {
+  font-size: 0.92rem;
   font-weight: 800;
-  font-size: 0.82rem;
   color: var(--plum);
+  line-height: 1.2;
 }
 
-.install-banner .close-banner {
-  background: none;
-  border: none;
+.pwa-desc {
+  font-size: 0.72rem;
   color: var(--plum-muted);
-  font-size: 1.1rem;
+  line-height: 1.25;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-pwa-install {
+  background: var(--coral);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px; /* Agak kotak */
+  padding: 8px 14px;
+  font-family: var(--font-game);
+  font-size: 0.82rem;
+  font-weight: 800;
   cursor: pointer;
-  padding: 0 4px;
+  transition: transform 0.08s;
+  white-space: nowrap;
+}
+
+.btn-pwa-install:active {
+  transform: translateY(2px);
+}
+
+.btn-pwa-close {
+  background: var(--plum-light);
+  border: none;
+  border-radius: 10px; /* Agak kotak */
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--plum);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-pwa-close:active {
+  transform: translateY(2px);
 }

@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#FFF8EF">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -21,9 +21,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/style.css?v=2.1">
+  <link rel="stylesheet" href="css/style.css?v=2.4">
 </head>
 <body>
+
+  <!-- Celebration Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
 
   <div id="game-app">
     
@@ -44,7 +47,7 @@
         <!-- App Title Header -->
         <div class="home-header">
           <h1 class="app-title">Tilezy</h1>
-          <p class="app-tagline">Hubungkan Ubin Klasik</p>
+          <p class="app-tagline">Hubungkan Ubin Santai Tanpa Batas Waktu</p>
         </div>
 
         <!-- 3 Fanned Mahjong Tiles Art (Blueberries, Candy, Carrot) -->
@@ -103,7 +106,26 @@
           </button>
         </div>
 
-        <!-- Bottom Tabs Navigation (Clean Solid Borders) -->
+        <!-- PWA INSTALL CARD (Gaya QuickPrep Modern) -->
+        <div class="pwa-install-banner-wrapper" id="pwa-install-banner" style="display: none;">
+          <div class="pwa-install-card">
+            <div class="pwa-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+            </div>
+            <div class="pwa-text-col">
+              <span class="pwa-title">Instal Tilezy</span>
+              <span class="pwa-desc">Tambahkan ke layar utama untuk pengalaman native app & akses offline...</span>
+            </div>
+            <div class="pwa-actions-row">
+              <button class="btn-pwa-install" id="btn-trigger-install">Instal Sekarang</button>
+              <button class="btn-pwa-close" id="btn-close-install" aria-label="Tutup">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Tabs Navigation -->
         <nav class="bottom-tabs-nav">
           <button class="nav-tab active" id="tab-home">
             <span class="tab-icon">🏠</span>
@@ -127,12 +149,32 @@
     </div>
 
     <!-- ========================================================
-         VIEW 2: GAMEPLAY SCREEN
+         VIEW 2: DEDICATED THEMES SELECTION PAGE (Halaman Penuh Baru)
+         ======================================================== -->
+    <div class="view-screen" id="view-themes-page">
+      <div class="themes-page-view">
+        <header class="page-top-header">
+          <button class="btn-icon-soft" id="btn-back-themes" title="Kembali">←</button>
+          <h2 class="page-header-title">Pilih Tema Ikon 🎨</h2>
+          <div style="width: 38px;"></div>
+        </header>
+
+        <div class="themes-grid-scroll">
+          <p style="margin-bottom: 14px; font-weight: 700; font-size: 0.9rem; color: var(--plum-muted); text-align: center;">
+            Sentuh tema di bawah untuk mengganti gambar ubin secara instan:
+          </p>
+          <div class="themes-cards-grid" id="themes-page-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================
+         VIEW 3: GAMEPLAY SCREEN (Santai, Tanpa Timer)
          ======================================================== -->
     <div class="view-screen" id="view-game">
       <div class="game-view">
         
-        <!-- TOP STATUS BAR (No diffuse shadows) -->
+        <!-- TOP STATUS BAR (No timer) -->
         <header class="game-top-bar">
           <button class="btn-icon-soft" id="btn-back-home" title="Kembali ke Menu Utama">🏠</button>
 
@@ -141,20 +183,14 @@
             <span class="val" id="level-display">Mudah · Lv. 1</span>
           </div>
 
-          <div class="pastel-pill">
-            <span class="icon">🏆</span>
-            <span class="val" id="score-display">0</span>
+          <div class="pastel-pill" title="Sisa Ubin yang Belum Terhubung">
+            <span class="icon">🧩</span>
+            <span class="val" id="remaining-display">36 Ubin</span>
           </div>
 
-          <!-- Timer Bar in Mint / Coral -->
-          <div class="game-timer-wrapper">
-            <div class="timer-text-row">
-              <span>WAKTU</span>
-              <span id="time-text">03:00</span>
-            </div>
-            <div class="pastel-timer-track">
-              <div class="pastel-timer-fill" id="timer-fill"></div>
-            </div>
+          <div class="pastel-pill" title="Total Skor Saat Ini">
+            <span class="icon">🏆</span>
+            <span class="val" id="score-display">0</span>
           </div>
 
           <button class="btn-icon-soft" id="btn-pause" title="Jeda Permainan">⏸️</button>
@@ -174,7 +210,7 @@
           </div>
         </main>
 
-        <!-- BOTTOM BOOSTER TOOLBAR (Clean border) -->
+        <!-- BOTTOM BOOSTER TOOLBAR -->
         <footer class="game-bottom-bar">
           <button class="pastel-booster-btn hint-btn" id="btn-hint" title="Bantuan Pasangan">
             <span class="badge" id="hint-count">3</span>
@@ -188,13 +224,13 @@
             <span class="b-text">ACAK</span>
           </button>
 
-          <button class="pastel-booster-btn time-btn" id="btn-time-plus" title="Tambah Waktu +15 Detik">
-            <span class="badge" id="time-count">2</span>
-            <span class="b-icon">⏱️</span>
-            <span class="b-text">+15 DETIK</span>
+          <button class="pastel-booster-btn magic-btn" id="btn-magic-pair" title="Pasang 1 Pasang Otomatis">
+            <span class="badge" id="magic-count">2</span>
+            <span class="b-icon">🪄</span>
+            <span class="b-text">SIHIR</span>
           </button>
 
-          <button class="pastel-booster-btn" id="btn-theme-quick" title="Ganti Tema">
+          <button class="pastel-booster-btn" id="btn-theme-quick" title="Buka Halaman Tema">
             <span class="b-icon" id="quick-theme-icon">🍬</span>
             <span class="b-text">TEMA</span>
           </button>
@@ -203,13 +239,6 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- PWA INSTALL BANNER -->
-  <div class="install-banner" id="pwa-install-banner" style="display: none;">
-    <span style="font-size: 1.4rem;">📲</span>
-    <span class="text">Install Tilezy di HP (Bisa Offline)</span>
-    <button class="close-banner" id="btn-close-install">✕</button>
   </div>
 
   <!-- MODAL: SCORE & TROPHY -->
@@ -239,20 +268,6 @@
     </div>
   </div>
 
-  <!-- MODAL: THEMES SELECTION (Dynamic 5 Themes) -->
-  <div class="modal-overlay" id="modal-themes">
-    <div class="pastel-modal-card">
-      <h2 class="modal-title">PILIH TEMA 🎨</h2>
-      <p class="modal-subtitle">Pilih tema ikon yang Anda sukai</p>
-
-      <div class="theme-options" id="themes-container"></div>
-
-      <div class="modal-actions">
-        <button class="btn-pastel" id="btn-close-themes">Selesai</button>
-      </div>
-    </div>
-  </div>
-
   <!-- MODAL: SETTINGS -->
   <div class="modal-overlay" id="modal-settings">
     <div class="pastel-modal-card">
@@ -272,6 +287,11 @@
       <div class="setting-row">
         <span class="setting-label">🎵 Musik Santai (BGM)</span>
         <button class="toggle-switch-btn" id="toggle-music">OFF</button>
+      </div>
+
+      <div class="setting-row" style="margin-top: 8px;">
+        <span class="setting-label">🔄 Mulai Ulang / Reset Data</span>
+        <button class="toggle-switch-btn" id="btn-reset-data" style="background: var(--coral); color: #FFFFFF;">Reset</button>
       </div>
 
       <div class="modal-actions" style="margin-top: 14px;">
@@ -294,11 +314,40 @@
     </div>
   </div>
 
-  <!-- MODAL: LEVEL WIN -->
+  <!-- MODAL: LEVEL WIN (Cute Mascot & Confetti Celebration) -->
   <div class="modal-overlay" id="modal-win">
-    <div class="pastel-modal-card">
-      <h2 class="modal-title" style="color: var(--mint-dark);">BERHASIL! 🎉</h2>
-      <p class="modal-subtitle">Semua ubin terhubung dengan sempurna!</p>
+    <div class="pastel-modal-card" style="position: relative; overflow: visible;">
+      
+      <!-- Cute Dancing Mascot (Kitten with Joyful Arms & Party Star) -->
+      <div class="mascot-celebration">
+        <svg viewBox="0 0 100 100" fill="none">
+          <!-- Cute Party Hat -->
+          <polygon points="50,6 38,28 62,28" fill="#FF8B7B" stroke="#483D52" stroke-width="2.5"/>
+          <circle cx="50" cy="6" r="3.5" fill="#FFD66B"/>
+          <!-- Kitten Head -->
+          <circle cx="50" cy="50" r="28" fill="#FFFFFF" stroke="#483D52" stroke-width="3"/>
+          <!-- Pointy Ears with Pink Inside -->
+          <polygon points="26,30 36,42 22,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5"/>
+          <polygon points="27,33 34,42 24,44" fill="#FFB3A8"/>
+          <polygon points="74,30 64,42 78,46" fill="#FFA96B" stroke="#483D52" stroke-width="2.5"/>
+          <polygon points="73,33 66,42 76,44" fill="#FFB3A8"/>
+          <!-- Happy Squinted Eyes -->
+          <path d="M38 48C38 44 44 44 44 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M56 48C56 44 62 44 62 48" stroke="#483D52" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Pink Cute Cheeks -->
+          <ellipse cx="34" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6"/>
+          <ellipse cx="66" cy="54" rx="4" ry="2.5" fill="#FF8B7B" opacity="0.6"/>
+          <!-- Heart Nose & Cat Smile -->
+          <polygon points="50,53 47,50 53,50" fill="#FF8B7B"/>
+          <path d="M47 54C47 57 50 57 50 54M50 54C50 57 53 57 53 54" stroke="#483D52" stroke-width="2" stroke-linecap="round"/>
+          <!-- Joyful Waving Paws -->
+          <circle cx="24" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5"/>
+          <circle cx="76" cy="64" r="8" fill="#FFFFFF" stroke="#483D52" stroke-width="2.5"/>
+        </svg>
+      </div>
+
+      <h2 class="modal-title" style="color: var(--mint-dark); font-size: 1.7rem;">HEBAT BANGET! 🎉</h2>
+      <p class="modal-subtitle">Misi selesai! Semua ubin terhubung!</p>
 
       <div class="star-rating" id="win-stars">
         <span class="star">★</span>
@@ -308,12 +357,12 @@
 
       <div class="stats-card-box">
         <div class="stat-item">
-          <span class="label">SKOR LEVEL</span>
+          <span class="label">SKOR MISI</span>
           <span class="value" id="win-score">+0</span>
         </div>
         <div class="stat-item">
-          <span class="label">SISA WAKTU</span>
-          <span class="value" id="win-time">0s</span>
+          <span class="label">KOMBO TERBAIK</span>
+          <span class="value" id="win-combo">x1</span>
         </div>
         <div class="stat-item">
           <span class="label">TOTAL SKOR</span>
@@ -323,39 +372,15 @@
 
       <div class="modal-actions">
         <button class="btn-pastel btn-secondary" id="btn-win-replay">🔄 Ulang</button>
-        <button class="btn-pastel" id="btn-win-next">Lanjut ▶</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: GAME OVER -->
-  <div class="modal-overlay" id="modal-gameover">
-    <div class="pastel-modal-card">
-      <h2 class="modal-title" style="color: var(--coral-dark);">WAKTU HABIS! ⏰</h2>
-      <p class="modal-subtitle">Tetap semangat, coba sekali lagi!</p>
-
-      <div class="stats-card-box">
-        <div class="stat-item">
-          <span class="label">SKOR ANDA</span>
-          <span class="value" id="gameover-score">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="label">SISA UBIN</span>
-          <span class="value" id="gameover-remaining">0</span>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-pastel btn-secondary" id="btn-gameover-home">Menu Utama</button>
-        <button class="btn-pastel" id="btn-gameover-retry">Coba Lagi 🔄</button>
+        <button class="btn-pastel" id="btn-win-next">Lanjut Level ▶</button>
       </div>
     </div>
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=2.1"></script>
-  <script src="js/icons.js?v=2.1"></script>
-  <script src="js/audio.js?v=2.1"></script>
-  <script src="js/app.js?v=2.1"></script>
+  <script src="js/onet-engine.js?v=2.4"></script>
+  <script src="js/icons.js?v=2.4"></script>
+  <script src="js/audio.js?v=2.4"></script>
+  <script src="js/app.js?v=2.4"></script>
 </body>
 </html>
