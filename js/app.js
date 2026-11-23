@@ -165,6 +165,15 @@
     setupPullToRefresh();
     setupSwipeToBack();
 
+    // Munculkan formulir nama sebelum bermain jika pemain belum memiliki username
+    if (!playerUsername) {
+      setTimeout(() => {
+        if (viewHome.classList.contains('active')) {
+          openUsernameModal(true);
+        }
+      }, 500);
+    }
+
     window.addEventListener('resize', handleResize);
   }
 
@@ -330,13 +339,8 @@
 
     btnHomePlay.addEventListener('click', () => {
       soundController.playClick();
-      if (!playerUsername) {
-        openUsernameModal(true);
-      } else {
-        currentLevel = 1;
-        currentLevelScore = 0;
-        switchView('game');
-      }
+      // Selalu munculkan form input nama sebelum mulai bermain
+      openUsernameModal(true);
     });
 
     if (btnOpenProfile) {
@@ -1319,10 +1323,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2.6')
+        navigator.serviceWorker.register('sw.js?v=2.7')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v2.6!');
+            console.log('Tilezy PWA Ready v2.7!');
           })
           .catch(err => console.log('SW error:', err));
       });
