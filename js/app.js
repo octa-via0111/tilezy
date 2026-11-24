@@ -12,19 +12,22 @@
       name: 'Mudah',
       rows: 6,
       cols: 6,
-      types: 8
+      types: 8,
+      time: 300
     },
     medium: {
       name: 'Sedang',
       rows: 8,
       cols: 8,
-      types: 12
+      types: 12,
+      time: 360
     },
     hard: {
       name: 'Sulit',
       rows: 8,
       cols: 12,
-      types: 16
+      types: 16,
+      time: 420
     }
   };
 
@@ -48,11 +51,14 @@
   let isDarkMode = localStorage.getItem('tilezy_dark_mode') === 'true';
   let playerUsername = localStorage.getItem('tilezy_username') || '';
 
-  // Game Engine State
+  // Game Engine & Timer State
   let engine = null;
   let selectedTile = null;
   let isProcessingMatch = false;
   let isPaused = false;
+  let remainingTime = 300;
+  let maxTime = 300;
+  let timerInterval = null;
   let currentLevelScore = 0;
   let comboCount = 0;
   let maxComboInRound = 1;
@@ -79,6 +85,8 @@
       cols: engine.cols,
       numTypes: engine.numTypes,
       board: engine.board,
+      remainingTime: remainingTime,
+      maxTime: maxTime,
       savedAt: Date.now()
     };
     try {
@@ -136,6 +144,8 @@
   // DOM Elements - Game
   const btnBackHome = document.getElementById('btn-back-home');
   const levelDisplay = document.getElementById('level-display');
+  const levelProgressFill = document.getElementById('level-progress-fill');
+  const timeDisplay = document.getElementById('time-display');
   const remainingDisplay = document.getElementById('remaining-display');
   const scoreDisplay = document.getElementById('score-display');
   const btnGameReload = document.getElementById('btn-game-reload');
@@ -162,6 +172,11 @@
   const modalSettings = document.getElementById('modal-settings');
   const modalPause = document.getElementById('modal-pause');
   const modalWin = document.getElementById('modal-win');
+  const modalGameOver = document.getElementById('modal-gameover');
+  const gameoverRemaining = document.getElementById('gameover-remaining');
+  const gameoverScore = document.getElementById('gameover-score');
+  const btnGameoverHome = document.getElementById('btn-gameover-home');
+  const btnGameoverRetry = document.getElementById('btn-gameover-retry');
   const toggleDarkModeSettings = document.getElementById('toggle-dark-mode-settings');
 
   // Profile Elements
@@ -305,6 +320,11 @@
   function switchView(viewName, updateHistory = true) {
     const fromView = currentActiveView;
     currentActiveView = viewName;
+
+    if (fromView === 'game' && viewName !== 'game') {
+      stopTimer();
+      saveGameState();
+    }
 
     // Bersihkan status aktif dari semua view screen
     [viewWelcome, viewHome, viewThemesPage, viewGame].forEach(v => {
@@ -620,7 +640,7 @@
 
   // DEDICATED THEMES PAGE SETUP (5 Themes with 4 preview tiles each)
   function setupThemesPage() {
-    quickThemeIcon.textContent = THEMES[activeTheme]?.badge || '🍬';
+    if (quickThemeIcon) quickThemeIcon.textContent = THEMES[activeTheme]?.badge || '🍬';
     renderThemesPage();
   }
 
@@ -668,7 +688,7 @@
     if (!THEMES[newTheme]) return;
     activeTheme = newTheme;
     localStorage.setItem('tilezy_theme', activeTheme);
-    quickThemeIcon.textContent = THEMES[activeTheme].badge;
+    if (quickThemeIcon) quickThemeIcon.textContent = THEMES[activeTheme].badge;
 
     renderThemesPage();
 
@@ -677,8 +697,100 @@
     }
   }
 
-  // Start round (NO TIMER, NO GRAVITY)
+  function formatTime(sec) {
+    const s = Math.max(0, Math.floor(sec));
+    const m = Math.floor(s / 60);
+    const remS = s % 60;
+    return `${String(m).padStart(2, '0')}:${String(remS).padStart(2, '0')}`;
+  }
+
+  function updateTimerUI() {
+    if (!timeDisplay) return;
+    timeDisplay.textContent = formatTime(remainingTime);
+    if (remainingTime <= 30 && remainingTime > 0) {
+      timeDisplay.classList.add('urgent');
+    } else {
+      timeDisplay.classList.remove('urgent');
+    }
+  }
+
+  function startTimer() {
+    stopTimer();
+    updateTimerUI();
+    timerInterval = setInterval(() => {
+      if (isPaused) return;
+      if (remainingTime > 0) {
+        remainingTime--;
+        updateTimerUI();
+        if (remainingTime === 30) {
+          soundController.playWrong();
+          soundController.vibrate([120, 60, 120]);
+        }
+        if (remainingTime % 5 === 0) {
+          saveGameState();
+        }
+        if (remainingTime <= 0) {
+          handleTimeUp();
+        }
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function handleTimeUp() {
+    stopTimer();
+    soundController.playGameOver();
+    soundController.vibrate([200, 100, 200, 100, 400]);
+
+    if (modalGameOver) {
+      const remainingCount = engine ? engine.getRemainingCount() : 0;
+      if (gameoverRemaining) gameoverRemaining.textContent = `${remainingCount} Ubin`;
+      if (gameoverScore) gameoverScore.textContent = currentLevelScore.toLocaleString();
+      modalGameOver.classList.add('active');
+    }
+  }
+
+  function updateProgressUI() {
+    if (!engine || !levelProgressFill) return;
+    const totalTiles = engine.rows * engine.cols;
+    const remaining = engine.getRemainingCount();
+    const cleared = totalTiles - remaining;
+    const pct = Math.min(100, Math.max(0, Math.round((cleared / totalTiles) * 100)));
+
+    levelProgressFill.style.width = `${pct}%`;
+
+    const s1 = document.getElementById('star-notch-1');
+    const s2 = document.getElementById('star-notch-2');
+    const s3 = document.getElementById('star-notch-3');
+
+    if (s1) s1.classList.toggle('active', pct >= 33);
+    if (s2) s2.classList.toggle('active', pct >= 66);
+    if (s3) s3.classList.toggle('active', pct >= 100);
+  }
+
+  function updateHeaderUI() {
+    if (levelDisplay) {
+      levelDisplay.textContent = `LEVEL ${currentLevel}`;
+    }
+    if (scoreDisplay) {
+      scoreDisplay.textContent = currentLevelScore.toLocaleString();
+    }
+    if (remainingDisplay && engine) {
+      remainingDisplay.textContent = `${engine.getRemainingCount()} Ubin`;
+    }
+    updateTimerUI();
+    updateProgressUI();
+  }
+
+  // Start round
   function startRound(forceNew = false) {
+    const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
     const saved = !forceNew ? getSavedGameState() : null;
 
     if (saved && saved.board && Array.isArray(saved.board)) {
@@ -687,8 +799,9 @@
       engine.board = saved.board;
       currentLevel = saved.level || currentLevel;
       currentLevelScore = saved.levelScore || 0;
+      maxTime = saved.maxTime || cfg.time || 300;
+      remainingTime = (typeof saved.remainingTime === 'number' && saved.remainingTime > 0) ? saved.remainingTime : maxTime;
     } else {
-      const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
       let r = cfg.rows;
       let c = cfg.cols;
 
@@ -702,6 +815,8 @@
 
       engine = new OnetEngine(r, c, cfg.types, 'none');
       currentLevelScore = 0;
+      maxTime = cfg.time || 300;
+      remainingTime = maxTime;
     }
 
     comboCount = 0;
@@ -714,15 +829,7 @@
     updateHeaderUI();
     calculateAndRenderGrid();
     saveGameState();
-  }
-
-  function updateHeaderUI() {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
-    levelDisplay.textContent = `${cfg.name} · Lv. ${currentLevel}`;
-    scoreDisplay.textContent = currentLevelScore.toLocaleString();
-    if (engine) {
-      remainingDisplay.textContent = `${engine.getRemainingCount()} Ubin`;
-    }
+    startTimer();
   }
 
   // Responsive Grid Calculation (Menjamin seluruh ubin muat tanpa terpotong)
@@ -1142,8 +1249,12 @@
 
   // CUTE LEVEL WIN CELEBRATION (Dancing Mascot + Confetti Shower)
   function handleLevelWin() {
+    stopTimer();
     clearSavedGameState();
     soundController.playWin();
+
+    const timeBonus = Math.max(0, remainingTime) * 10;
+    currentLevelScore += timeBonus;
 
     totalScore += currentLevelScore;
     if (currentLevelScore > bestScores[currentDifficulty]) {
@@ -1486,19 +1597,50 @@
     btnHint.addEventListener('click', useHint);
     btnShuffle.addEventListener('click', useShuffle);
     btnMagicPair.addEventListener('click', useMagicPair);
-    btnThemeQuick.addEventListener('click', () => {
-      soundController.playClick();
-      previousView = 'game';
-      switchView('themes');
-    });
+
+    if (btnThemeQuick) {
+      btnThemeQuick.addEventListener('click', () => {
+        soundController.playClick();
+        previousView = 'game';
+        switchView('themes');
+      });
+    }
+
+    if (btnBackHome) {
+      btnBackHome.addEventListener('click', () => {
+        soundController.playClick();
+        stopTimer();
+        saveGameState();
+        switchView('home');
+      });
+    }
 
     if (btnGameReload) {
       btnGameReload.addEventListener('click', () => {
         soundController.playClick();
         if (confirm('Mulai ulang level ini dari awal?')) {
+          stopTimer();
           clearSavedGameState();
           startRound(true);
         }
+      });
+    }
+
+    if (btnGameoverRetry) {
+      btnGameoverRetry.addEventListener('click', () => {
+        soundController.playClick();
+        if (modalGameOver) modalGameOver.classList.remove('active');
+        clearSavedGameState();
+        startRound(true);
+      });
+    }
+
+    if (btnGameoverHome) {
+      btnGameoverHome.addEventListener('click', () => {
+        soundController.playClick();
+        if (modalGameOver) modalGameOver.classList.remove('active');
+        clearSavedGameState();
+        switchView('home');
       });
     }
 
@@ -1506,6 +1648,7 @@
       btnPause.addEventListener('click', () => {
         soundController.playClick();
         isPaused = true;
+        stopTimer();
         if (modalPause) modalPause.classList.add('active');
       });
     }
@@ -1515,6 +1658,7 @@
       btnResume.addEventListener('click', () => {
         soundController.playClick();
         isPaused = false;
+        startTimer();
         if (modalPause) modalPause.classList.remove('active');
       });
     }
@@ -1613,10 +1757,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.7')
+        navigator.serviceWorker.register('sw.js?v=3.8')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.7 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.8 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
@@ -1624,11 +1768,17 @@
       // Periksa update setiap kali pemain kembali ke aplikasi, dan simpan progres saat backgrounded
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
+          stopTimer();
           saveGameState();
-        } else if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-          navigator.serviceWorker.getRegistration().then(reg => {
-            if (reg) reg.update();
-          });
+        } else {
+          if (viewGame && viewGame.classList.contains('active') && !isPaused) {
+            startTimer();
+          }
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg) reg.update();
+            });
+          }
         }
       });
 

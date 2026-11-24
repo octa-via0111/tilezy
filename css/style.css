@@ -510,12 +510,163 @@ body.dark-mode::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: var(--cream-card);
   border-bottom: 1.5px solid var(--border-soft);
   box-shadow: none;
   gap: 8px;
   flex-shrink: 0;
+}
+
+body.dark-mode .game-top-bar {
+  background: #251D24;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.top-bar-center-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  max-width: 320px;
+}
+
+.btn-top-header {
+  background: transparent;
+  border: none;
+  color: var(--plum);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.08s, opacity 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+body.dark-mode .btn-top-header {
+  color: #FFFFFF;
+}
+
+.btn-top-header:active {
+  transform: scale(0.9);
+}
+
+.header-pill {
+  background: #382B33;
+  color: #FFFFFF;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .header-pill {
+  background: #2D2228;
+}
+
+/* Timer Pill */
+.header-pill.timer-pill {
+  padding: 6px 14px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.header-clock-icon {
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.timer-digits {
+  font-family: var(--font-game);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.8px;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.timer-digits.urgent {
+  color: #FF5252;
+  animation: timerUrgentPulse 0.6s infinite alternate;
+}
+
+@keyframes timerUrgentPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); color: #FF1744; }
+}
+
+/* Level & Progress Pill */
+.header-pill.level-pill {
+  flex-direction: column;
+  padding: 6px 14px;
+  flex: 1;
+  min-width: 120px;
+  max-width: 160px;
+  align-items: center;
+  justify-content: center;
+}
+
+.level-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.level-title-text {
+  font-family: var(--font-game);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 1.2px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.level-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 6px;
+  position: relative;
+  margin-top: 4px;
+  overflow: visible;
+}
+
+.level-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFA000, #FFD54F);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  max-width: 100%;
+}
+
+.track-stars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+  pointer-events: none;
+}
+
+.track-star {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.28);
+  transition: color 0.25s, transform 0.25s;
+  line-height: 1;
+}
+
+.track-star.active {
+  color: #FFD54F;
+  text-shadow: 0 0 5px rgba(255, 213, 79, 0.9);
+  transform: scale(1.2);
 }
 
 .pastel-pill {
@@ -658,9 +809,33 @@ body.dark-mode .tile.selected {
 
 @media (max-width: 480px) {
   .game-top-bar {
-    padding: 5px 8px;
-    gap: 5px;
+    padding: 6px 8px;
+    gap: 6px;
     box-shadow: none;
+  }
+  .top-bar-center-group {
+    gap: 6px;
+  }
+  .header-pill.timer-pill {
+    padding: 5px 10px;
+    gap: 6px;
+  }
+  .timer-digits {
+    font-size: 1.15rem;
+  }
+  .header-pill.level-pill {
+    padding: 5px 8px;
+    min-width: 105px;
+  }
+  .level-title-text {
+    font-size: 0.78rem;
+  }
+  .level-progress-track {
+    height: 7px;
+  }
+  .btn-top-header {
+    width: 36px;
+    height: 36px;
   }
   .pastel-pill {
     padding: 4px 7px;

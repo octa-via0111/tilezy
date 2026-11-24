@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css?v=3.7">
+  <link rel="stylesheet" href="css/style.css?v=3.8">
 </head>
 
 <body>
@@ -294,26 +294,45 @@
     <div class="view-screen" id="view-game">
       <div class="game-view">
 
-        <!-- TOP STATUS BAR (No timer) -->
+        <!-- TOP STATUS BAR: Desain Sesuai Contoh Gambar User (Timer & Level Progress) -->
         <header class="game-top-bar">
-          <button class="btn-icon-soft" id="btn-back-home" title="Kembali ke Menu Utama">🏠</button>
+          <button class="btn-top-header" id="btn-back-home" title="Kembali ke Menu Utama">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
 
-          <div class="pastel-pill" id="level-pill" title="Info Level">
-            <span class="icon">⭐</span>
-            <span class="val" id="level-display">Mudah · Lv. 1</span>
+          <div class="top-bar-center-group">
+            <!-- Timer Pill (Clock Icon + Countdown mm:ss) -->
+            <div class="header-pill timer-pill" id="timer-box" title="Waktu Tersisa">
+              <svg class="header-clock-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="12 7 12 12 15 12"/>
+              </svg>
+              <span class="timer-digits" id="time-display">05:00</span>
+            </div>
+
+            <!-- Level & Progress Pill with Stars -->
+            <div class="header-pill level-pill" id="level-box" title="Kemajuan Level">
+              <div class="level-title-row">
+                <span class="level-title-text" id="level-display">LEVEL 1</span>
+              </div>
+              <div class="level-progress-track">
+                <div class="level-progress-fill" id="level-progress-fill" style="width: 0%;"></div>
+                <div class="track-stars">
+                  <span class="track-star" id="star-notch-1">★</span>
+                  <span class="track-star" id="star-notch-2">★</span>
+                  <span class="track-star" id="star-notch-3">★</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="pastel-pill" title="Sisa Ubin yang Belum Terhubung">
-            <span class="icon">🧩</span>
-            <span class="val" id="remaining-display">36 Ubin</span>
-          </div>
-
-          <div class="pastel-pill" title="Total Skor Saat Ini">
-            <span class="icon">🏆</span>
-            <span class="val" id="score-display">0</span>
-          </div>
-
-          <button class="btn-icon-soft" id="btn-game-reload" title="Ulangi Level Dari Awal">🔄</button>
+          <button class="btn-top-header" id="btn-game-reload" title="Ulangi Level Dari Awal">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+            </svg>
+          </button>
         </header>
 
         <!-- GAMEPLAY BOARD -->
@@ -330,7 +349,7 @@
           <canvas id="line-canvas"></canvas>
         </main>
 
-        <!-- BOTTOM BOOSTER TOOLBAR -->
+        <!-- BOTTOM BOOSTER TOOLBAR (Tanpa Tombol Tema di Sesi Game) -->
         <footer class="game-bottom-bar">
           <button class="pastel-booster-btn hint-btn" id="btn-hint" title="Bantuan Pasangan">
             <span class="badge" id="hint-count">3</span>
@@ -348,11 +367,6 @@
             <span class="badge" id="magic-count">2</span>
             <span class="b-icon">🪄</span>
             <span class="b-text">SIHIR</span>
-          </button>
-
-          <button class="pastel-booster-btn" id="btn-theme-quick" title="Buka Halaman Tema">
-            <span class="b-icon" id="quick-theme-icon">🍬</span>
-            <span class="b-text">TEMA</span>
           </button>
         </footer>
 
@@ -443,6 +457,31 @@
     </div>
   </div>
 
+  <!-- MODAL: GAME OVER (WAKTU HABIS) -->
+  <div class="modal-overlay" id="modal-gameover">
+    <div class="pastel-modal-card">
+      <div style="font-size: 3rem; margin-bottom: 6px;">⏱️</div>
+      <h2 class="modal-title" style="color: #FF5252; font-size: 1.6rem;">WAKTU HABIS!</h2>
+      <p class="modal-subtitle">Waktu level ini telah selesai. Tetap semangat, yuk coba lagi!</p>
+
+      <div class="stats-card-box" style="margin: 16px 0;">
+        <div class="stat-item">
+          <span class="label">SISA UBIN</span>
+          <span class="value" id="gameover-remaining">0 Ubin</span>
+        </div>
+        <div class="stat-item">
+          <span class="label">SKOR LEVEL</span>
+          <span class="value" id="gameover-score">0</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-pastel btn-secondary" id="btn-gameover-home">🏠 Menu</button>
+        <button class="btn-pastel" id="btn-gameover-retry">🔄 Coba Lagi</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: PAUSE -->
   <div class="modal-overlay" id="modal-pause">
     <div class="pastel-modal-card">
@@ -522,10 +561,10 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=3.7"></script>
-  <script src="js/icons.js?v=3.7"></script>
-  <script src="js/audio.js?v=3.7"></script>
-  <script src="js/app.js?v=3.7"></script>
+  <script src="js/onet-engine.js?v=3.8"></script>
+  <script src="js/icons.js?v=3.8"></script>
+  <script src="js/audio.js?v=3.8"></script>
+  <script src="js/app.js?v=3.8"></script>
 </body>
 
 </html>
