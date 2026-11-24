@@ -111,6 +111,11 @@ class OnetEngine {
 
   /**
    * Finds a valid Onet connecting path between (r1, c1) and (r2, c2) with at most 2 turns (3 segments).
+   * Strictly enforces classic Onet rules:
+   * - 0 turns: 1 direct line segment (horizontal or vertical)
+   * - 1 turn: 2 segments (L-shape with 1 empty corner)
+   * - 2 turns: 3 segments (Z-shape or U-shape with 2 empty corners)
+   * Any path requiring 3 or more turns is strictly forbidden.
    * Returns array of path points [{r, c}, ...] or null if no valid path exists.
    */
   findPath(r1, c1, r2, c2) {
@@ -140,68 +145,38 @@ class OnetEngine {
     }
 
     // 3. Check 2-turns (Z/U-shape / 3 segments)
-    // Scan horizontally from (r1, c1) across all empty cells (including virtual borders)
     const candidates = [];
 
-    // Right from c1
-    for (let c = c1 + 1; c < this.paddedCols; c++) {
-      if (this.board[r1][c] !== 0) break;
-      // Now from (r1, c) we need a 1-turn connection to (r2, c2)
-      // Since first segment is horizontal, second segment must be vertical to (r2, c)
-      if (this.board[r2][c] === 0 || (r2 === r1 && c === c2) || (c === c2)) {
-        if (this.canDirectConnect(r1, c, r2, c) && this.canDirectConnect(r2, c, r2, c2)) {
-          candidates.push([
+    // Tipe A: Horizontal -> Vertikal -> Horizontal (kolom perantara c)
+    for (let c = 0; c < this.paddedCols; c++) {
+      if (c === c1 || c === c2) continue;
+      if (this.board[r1][c] === 0 && this.board[r2][c] === 0) {
+        if (this.canDirectConnect(r1, c1, r1, c) &&
+            this.canDirectConnect(r1, c, r2, c) &&
+            this.canDirectConnect(r2, c, r2, c2)) {
+          candidates.push(this._simplifyPath([
             { r: r1, c: c1 },
             { r: r1, c: c },
             { r: r2, c: c },
             { r: r2, c: c2 }
-          ]);
+          ]));
         }
       }
     }
 
-    // Left from c1
-    for (let c = c1 - 1; c >= 0; c--) {
-      if (this.board[r1][c] !== 0) break;
-      if (this.board[r2][c] === 0 || (r2 === r1 && c === c2) || (c === c2)) {
-        if (this.canDirectConnect(r1, c, r2, c) && this.canDirectConnect(r2, c, r2, c2)) {
-          candidates.push([
-            { r: r1, c: c1 },
-            { r: r1, c: c },
-            { r: r2, c: c },
-            { r: r2, c: c2 }
-          ]);
-        }
-      }
-    }
-
-    // Down from r1
-    for (let r = r1 + 1; r < this.paddedRows; r++) {
-      if (this.board[r][c1] !== 0) break;
-      // Since first segment is vertical, second segment must be horizontal to (r, c2)
-      if (this.board[r][c2] === 0 || (r === r2 && c1 === c2) || (r === r2)) {
-        if (this.canDirectConnect(r, c1, r, c2) && this.canDirectConnect(r, c2, r2, c2)) {
-          candidates.push([
+    // Tipe B: Vertikal -> Horizontal -> Vertikal (baris perantara r)
+    for (let r = 0; r < this.paddedRows; r++) {
+      if (r === r1 || r === r2) continue;
+      if (this.board[r][c1] === 0 && this.board[r][c2] === 0) {
+        if (this.canDirectConnect(r1, c1, r, c1) &&
+            this.canDirectConnect(r, c1, r, c2) &&
+            this.canDirectConnect(r, c2, r2, c2)) {
+          candidates.push(this._simplifyPath([
             { r: r1, c: c1 },
             { r: r, c: c1 },
             { r: r, c: c2 },
             { r: r2, c: c2 }
-          ]);
-        }
-      }
-    }
-
-    // Up from r1
-    for (let r = r1 - 1; r >= 0; r--) {
-      if (this.board[r][c1] !== 0) break;
-      if (this.board[r][c2] === 0 || (r === r2 && c1 === c2) || (r === r2)) {
-        if (this.canDirectConnect(r, c1, r, c2) && this.canDirectConnect(r, c2, r2, c2)) {
-          candidates.push([
-            { r: r1, c: c1 },
-            { r: r, c: c1 },
-            { r: r, c: c2 },
-            { r: r2, c: c2 }
-          ]);
+          ]));
         }
       }
     }
@@ -212,104 +187,8 @@ class OnetEngine {
       return candidates[0];
     }
 
-    // 4. Any unobstructed path of empty cells (Multi-turn BFS through open road)
-    // Jika ada jalan kosong yang menghubungkan kedua ubin, ubin bisa dipilih & dihubungkan!
-    return this._findGeneralPath(r1, c1, r2, c2);
-  }
-
-  /**
-   * Ray-casting turn-by-turn BFS for arbitrary open empty paths across board
-   */
-  _findGeneralPath(r1, c1, r2, c2) {
-    const DIRS = [
-      { dr: -1, dc: 0 },
-      { dr: 1, dc: 0 },
-      { dr: 0, dc: -1 },
-      { dr: 0, dc: 1 }
-    ];
-
-    const visited = Array.from({ length: this.paddedRows }, () =>
-      Array.from({ length: this.paddedCols }, () => [Infinity, Infinity, Infinity, Infinity])
-    );
-
-    const queue = [];
-
-    // Cast initial rays in all 4 directions from start (r1, c1)
-    for (let d = 0; d < 4; d++) {
-      const { dr, dc } = DIRS[d];
-      let nr = r1 + dr;
-      let nc = c1 + dc;
-      while (nr >= 0 && nr < this.paddedRows && nc >= 0 && nc < this.paddedCols) {
-        if (nr === r2 && nc === c2) {
-          return [{ r: r1, c: c1 }, { r: r2, c: c2 }];
-        }
-        if (this.board[nr][nc] !== 0) break;
-
-        visited[nr][nc][d] = 0;
-        queue.push({
-          r: nr,
-          c: nc,
-          dir: d,
-          turns: 0,
-          path: [{ r: r1, c: c1 }, { r: nr, c: nc }]
-        });
-
-        nr += dr;
-        nc += dc;
-      }
-    }
-
-    let bestSolution = null;
-
-    while (queue.length > 0) {
-      const cur = queue.shift();
-
-      if (bestSolution && cur.turns >= bestSolution.turns) {
-        continue;
-      }
-
-      for (let nd = 0; nd < 4; nd++) {
-        if (nd === cur.dir) continue;
-        if (DIRS[nd].dr === -DIRS[cur.dir].dr && DIRS[nd].dc === -DIRS[cur.dir].dc) continue;
-
-        const nextTurns = cur.turns + 1;
-        const { dr, dc } = DIRS[nd];
-        let nr = cur.r + dr;
-        let nc = cur.c + dc;
-
-        while (nr >= 0 && nr < this.paddedRows && nc >= 0 && nc < this.paddedCols) {
-          if (nr === r2 && nc === c2) {
-            const finalPath = [...cur.path, { r: r2, c: c2 }];
-            if (!bestSolution || nextTurns < bestSolution.turns ||
-               (nextTurns === bestSolution.turns && this._pathLength(finalPath) < this._pathLength(bestSolution.path))) {
-              bestSolution = { turns: nextTurns, path: finalPath };
-            }
-            break;
-          }
-
-          if (this.board[nr][nc] !== 0) break;
-
-          if (nextTurns < visited[nr][nc][nd]) {
-            visited[nr][nc][nd] = nextTurns;
-            queue.push({
-              r: nr,
-              c: nc,
-              dir: nd,
-              turns: nextTurns,
-              path: [...cur.path, { r: nr, c: nc }]
-            });
-          }
-
-          nr += dr;
-          nc += dc;
-        }
-      }
-    }
-
-    if (bestSolution) {
-      return this._simplifyPath(bestSolution.path);
-    }
-
+    // Aturan Onet Klasik: Maksimal 2 belokan (3 ruas garis).
+    // Jika tidak ada jalur dengan <= 2 belokan, pasangan TIDAK BOLEH dihilangkan!
     return null;
   }
 

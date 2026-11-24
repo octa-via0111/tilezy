@@ -912,21 +912,85 @@
     }, 240);
   }
 
-  // Draw connecting beam (Garis penghubung ubin menyala utuh tanpa terpotong)
+  // Penjajaran koordinat ortogonal (Menjamin 100% siku-siku 90° lurus sempurna tanpa miring atau melengkung)
+  function alignOrthogonalCoords(pts, coords) {
+    if (!pts || pts.length < 2) return coords;
+
+    if (pts.length === 2) {
+      // 0 belokan: garis lurus horizontal atau vertikal murni
+      if (pts[0].r === pts[1].r) {
+        coords[1].y = coords[0].y;
+      } else if (pts[0].c === pts[1].c) {
+        coords[1].x = coords[0].x;
+      }
+    } else if (pts.length === 3) {
+      // 1 belokan: bentuk siku L murni (90° tajam dan tegas)
+      if (pts[0].r === pts[1].r) {
+        // H -> V
+        coords[1].y = coords[0].y;
+        coords[1].x = coords[2].x;
+      } else {
+        // V -> H
+        coords[1].x = coords[0].x;
+        coords[1].y = coords[2].y;
+      }
+    } else if (pts.length === 4) {
+      // 2 belokan: bentuk siku Z atau U murni (dua sudut siku 90° tajam dan tegas)
+      if (pts[0].r === pts[1].r) {
+        // H -> V -> H
+        coords[1].y = coords[0].y;
+        coords[2].y = coords[3].y;
+        coords[2].x = coords[1].x;
+      } else {
+        // V -> H -> V
+        coords[1].x = coords[0].x;
+        coords[2].x = coords[3].x;
+        coords[2].y = coords[1].y;
+      }
+    } else {
+      // Menjaga garis lurus ortogonal untuk setiap segmen
+      for (let i = 0; i < pts.length - 1; i++) {
+        if (pts[i].r === pts[i + 1].r) {
+          coords[i + 1].y = coords[i].y;
+        } else if (pts[i].c === pts[i + 1].c) {
+          coords[i + 1].x = coords[i].x;
+        }
+      }
+    }
+
+    return coords;
+  }
+
+  // Draw connecting beam (Garis penghubung ubin menyala utuh, lurus siku-siku tajam tanpa melengkung)
   function drawConnectingPath(path) {
     clearCanvas();
     if (!path || path.length < 2) return;
 
-    const coords = path.map(pt => getPixelCoordForGridCell(pt.r, pt.c));
+    // Sederhanakan titik-titik jika ada segmen kolinear
+    const simplified = [path[0]];
+    for (let i = 1; i < path.length - 1; i++) {
+      const prev = simplified[simplified.length - 1];
+      const cur = path[i];
+      const next = path[i + 1];
+      if ((prev.r === cur.r && cur.r === next.r) || (prev.c === cur.c && cur.c === next.c)) {
+        continue;
+      }
+      simplified.push(cur);
+    }
+    simplified.push(path[path.length - 1]);
+
+    let coords = simplified.map(pt => getPixelCoordForGridCell(pt.r, pt.c));
+    coords = alignOrthogonalCoords(simplified, coords);
 
     // 1. Lapisan luar bercahaya lembut (Outer Glow Halo)
     canvasCtx.save();
     canvasCtx.shadowColor = '#FFD66B';
-    canvasCtx.shadowBlur = 8;
+    canvasCtx.shadowBlur = 6;
     canvasCtx.strokeStyle = '#FFE082';
-    canvasCtx.lineWidth = 7;
-    canvasCtx.lineCap = 'round';
-    canvasCtx.lineJoin = 'round';
+    canvasCtx.lineWidth = 6;
+    canvasCtx.lineCap = 'square';
+    canvasCtx.lineJoin = 'miter';
+    canvasCtx.miterLimit = 4;
 
     canvasCtx.beginPath();
     canvasCtx.moveTo(coords[0].x, coords[0].y);
@@ -936,12 +1000,13 @@
     canvasCtx.stroke();
     canvasCtx.restore();
 
-    // 2. Garis inti coral terang (Vibrant Inner Core Beam)
+    // 2. Garis inti coral terang & lurus siku-siku (Vibrant Inner Core Beam)
     canvasCtx.save();
-    canvasCtx.strokeStyle = '#FF6B6B';
+    canvasCtx.strokeStyle = '#FF5252';
     canvasCtx.lineWidth = 3;
-    canvasCtx.lineCap = 'round';
-    canvasCtx.lineJoin = 'round';
+    canvasCtx.lineCap = 'square';
+    canvasCtx.lineJoin = 'miter';
+    canvasCtx.miterLimit = 4;
 
     canvasCtx.beginPath();
     canvasCtx.moveTo(coords[0].x, coords[0].y);
@@ -950,21 +1015,6 @@
     }
     canvasCtx.stroke();
     canvasCtx.restore();
-
-    // 3. Titik simpul di setiap belokan & ujung garis (Node Joints)
-    coords.forEach(pt => {
-      canvasCtx.save();
-      canvasCtx.fillStyle = '#FF6B6B';
-      canvasCtx.beginPath();
-      canvasCtx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
-      canvasCtx.fill();
-
-      canvasCtx.fillStyle = '#FFFFFF';
-      canvasCtx.beginPath();
-      canvasCtx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
-      canvasCtx.fill();
-      canvasCtx.restore();
-    });
   }
 
   function clearCanvas() {
@@ -1563,10 +1613,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.6')
+        navigator.serviceWorker.register('sw.js?v=3.7')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.6 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.7 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
