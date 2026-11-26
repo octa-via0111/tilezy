@@ -1815,10 +1815,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.9')
+        navigator.serviceWorker.register('sw.js?v=4.0')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.9 (100% Offline)!');
+            console.log('Tilezy PWA Ready v4.0 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
