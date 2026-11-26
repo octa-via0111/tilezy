@@ -8,7 +8,12 @@
     "serve": "npx serve -l 8080 .",
     "dev": "npx live-server ."
   },
-  "keywords": ["onet", "game", "pwa", "javascript"],
+  "keywords": [
+    "onet",
+    "game",
+    "pwa",
+    "javascript"
+  ],
   "author": "",
   "license": "MIT"
 }

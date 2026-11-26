@@ -173,6 +173,9 @@
   const modalPause = document.getElementById('modal-pause');
   const modalWin = document.getElementById('modal-win');
   const modalGameOver = document.getElementById('modal-gameover');
+  const modalLeaveConfirm = document.getElementById('modal-leave-confirm');
+  const btnLeaveCancel = document.getElementById('btn-leave-cancel');
+  const btnLeaveConfirm = document.getElementById('btn-leave-confirm');
   const gameoverRemaining = document.getElementById('gameover-remaining');
   const gameoverScore = document.getElementById('gameover-score');
   const btnGameoverHome = document.getElementById('btn-gameover-home');
@@ -381,18 +384,62 @@
     }
   }
 
+  // Konfirmasi Keluar Game (Are you sure want to leave?)
+  function requestLeaveGame() {
+    soundController.playClick();
+    stopTimer();
+    saveGameState();
+    if (modalLeaveConfirm) {
+      modalLeaveConfirm.classList.add('active');
+    }
+  }
+
+  function cancelLeaveGame() {
+    soundController.playClick();
+    if (modalLeaveConfirm) {
+      modalLeaveConfirm.classList.remove('active');
+    }
+    // Lanjutkan timer jika masih berada di arena game dan tidak pause
+    if (currentActiveView === 'game' && !isPaused) {
+      startTimer();
+    }
+  }
+
+  function confirmLeaveGame() {
+    soundController.playClick();
+    if (modalLeaveConfirm) {
+      modalLeaveConfirm.classList.remove('active');
+    }
+    stopTimer();
+    saveGameState();
+    switchView('home');
+  }
+
   // Navigasi Kembali (Digunakan oleh tombol back, swipe gesture, & popstate)
   function navigateBack() {
-    soundController.playClick();
+    // 1. Jika modal konfirmasi keluar game sedang aktif, batalkan (No) dan lanjutkan timer
+    if (modalLeaveConfirm && modalLeaveConfirm.classList.contains('active')) {
+      cancelLeaveGame();
+      return;
+    }
 
-    // 1. Jika ada modal yang aktif (Score, Settings, Pause, Win), tutup modalnya terlebih dahulu
+    // 2. Jika ada modal lain yang aktif (Score, Settings, Pause, Win), tutup modalnya terlebih dahulu
     const activeModal = document.querySelector('.modal-overlay.active');
     if (activeModal) {
+      soundController.playClick();
       activeModal.classList.remove('active');
       return;
     }
 
-    // 2. Jika di tampilan welcome (dan pemain sudah punya nama sebelumnya), kembali ke home
+    // 3. Jika di arena game, tampilkan dialog konfirmasi keluar ("Are you sure want to leave?")
+    if (currentActiveView === 'game') {
+      requestLeaveGame();
+      return;
+    }
+
+    soundController.playClick();
+
+    // 4. Jika di tampilan welcome (dan pemain sudah punya nama sebelumnya), kembali ke home
     if (currentActiveView === 'welcome') {
       if (playerUsername) {
         switchView('home', false);
@@ -403,22 +450,12 @@
       return;
     }
 
-    // 3. Jika di halaman tema, kembali ke halaman sebelumnya (Home atau Game)
+    // 5. Jika di halaman tema, kembali ke halaman sebelumnya (Home atau Game)
     if (currentActiveView === 'themes') {
       const targetView = previousView || 'home';
       switchView(targetView, false);
       if (window.location.hash) {
         history.replaceState({ view: targetView }, '', targetView === 'home' ? window.location.pathname : '#' + targetView);
-      }
-      return;
-    }
-
-    // 4. Jika di arena game, kembali ke menu utama (simpan progres langkah terakhir)
-    if (currentActiveView === 'game') {
-      saveGameState();
-      switchView('home', false);
-      if (window.location.hash) {
-        history.replaceState({ view: 'home' }, '', window.location.pathname);
       }
       return;
     }
@@ -499,7 +536,7 @@
     }
 
     btnBackHome.addEventListener('click', () => {
-      navigateBack();
+      requestLeaveGame();
     });
 
     btnToggleDarkMode.addEventListener('click', () => {
@@ -606,10 +643,24 @@
 
     // Handle Browser Popstate (tombol back fisik HP atau swipe gesture sistem Android/iOS)
     window.addEventListener('popstate', (e) => {
+      // Jika modal konfirmasi keluar game aktif, batalkan (No) dan lanjutkan timer
+      if (modalLeaveConfirm && modalLeaveConfirm.classList.contains('active')) {
+        cancelLeaveGame();
+        history.pushState({ view: 'game' }, '', '#game');
+        return;
+      }
+
       const activeModal = document.querySelector('.modal-overlay.active');
       if (activeModal) {
         activeModal.classList.remove('active');
         history.pushState({ view: currentActiveView }, '', currentActiveView === 'home' ? window.location.pathname : '#' + currentActiveView);
+        return;
+      }
+
+      // Jika pemain menekan back browser/HP di sesi game, tahan dan tampilkan dialog konfirmasi
+      if (currentActiveView === 'game') {
+        history.pushState({ view: 'game' }, '', '#game');
+        requestLeaveGame();
         return;
       }
 
@@ -1606,12 +1657,19 @@
       });
     }
 
-    if (btnBackHome) {
-      btnBackHome.addEventListener('click', () => {
-        soundController.playClick();
-        stopTimer();
-        saveGameState();
-        switchView('home');
+    if (btnLeaveCancel) {
+      btnLeaveCancel.addEventListener('click', cancelLeaveGame);
+    }
+
+    if (btnLeaveConfirm) {
+      btnLeaveConfirm.addEventListener('click', confirmLeaveGame);
+    }
+
+    if (modalLeaveConfirm) {
+      modalLeaveConfirm.addEventListener('click', (e) => {
+        if (e.target === modalLeaveConfirm) {
+          cancelLeaveGame();
+        }
       });
     }
 
@@ -1757,10 +1815,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3.8')
+        navigator.serviceWorker.register('sw.js?v=3.9')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v3.8 (100% Offline)!');
+            console.log('Tilezy PWA Ready v3.9 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
@@ -1771,7 +1829,7 @@
           stopTimer();
           saveGameState();
         } else {
-          if (viewGame && viewGame.classList.contains('active') && !isPaused) {
+          if (viewGame && viewGame.classList.contains('active') && !isPaused && (!modalLeaveConfirm || !modalLeaveConfirm.classList.contains('active'))) {
             startTimer();
           }
           if (navigator.serviceWorker && navigator.serviceWorker.controller) {

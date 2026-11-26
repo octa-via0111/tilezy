@@ -3,7 +3,7 @@
  * 100% Offline Gameplay & Persistent Cache Strategy (v3.5)
  */
 
-const CACHE_NAME = 'tilezy-pastel-v3.8';
+const CACHE_NAME = 'tilezy-pastel-v3.9';
 const CORE_ASSETS = [
   './',
   './index.html',
