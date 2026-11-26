@@ -161,7 +161,6 @@
         <!-- App Title Header -->
         <div class="home-header">
           <h1 class="app-title">Tilezy</h1>
-          <p class="app-tagline">Hubungkan Ubin Santai Tanpa Batas Waktu</p>
         </div>
 
         <!-- 3 Fanned Mahjong Tiles Art (Blueberries, Candy, Carrot) -->
@@ -209,7 +208,7 @@
 
         <!-- Difficulty Selection: Easy, Medium, Hard -->
         <div class="difficulty-section">
-          <span class="diff-label">Tingkat Kesulitan:</span>
+          <span class="diff-label" id="diff-label">Tingkat Kesulitan:</span>
           <div class="diff-pills">
             <button class="diff-pill active" data-diff="easy" id="diff-easy">Mudah</button>
             <button class="diff-pill" data-diff="medium" id="diff-medium">Sedang</button>
@@ -281,7 +280,7 @@
         <div class="themes-grid-scroll">
           <p
             style="margin-bottom: 14px; font-weight: 700; font-size: 0.9rem; color: var(--plum-muted); text-align: center;">
-            Sentuh tema di bawah untuk mengganti gambar ubin secara instan:
+            Sentuh tema di bawah untuk mengganti gambar secara instan:
           </p>
           <div class="themes-cards-grid" id="themes-page-grid"></div>
         </div>
@@ -297,7 +296,8 @@
         <!-- TOP STATUS BAR: Desain Sesuai Contoh Gambar User (Timer & Level Progress) -->
         <header class="game-top-bar">
           <button class="btn-top-header" id="btn-back-home" title="Kembali ke Menu Utama">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
@@ -305,9 +305,10 @@
           <div class="top-bar-center-group">
             <!-- Timer Pill (Clock Icon + Countdown mm:ss) -->
             <div class="header-pill timer-pill" id="timer-box" title="Waktu Tersisa">
-              <svg class="header-clock-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"/>
-                <polyline points="12 7 12 12 15 12"/>
+              <svg class="header-clock-icon" viewBox="0 0 24 24" width="20" height="20" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <polyline points="12 7 12 12 15 12" />
               </svg>
               <span class="timer-digits" id="time-display">05:00</span>
             </div>
@@ -329,8 +330,9 @@
           </div>
 
           <button class="btn-top-header" id="btn-game-reload" title="Ulangi Level Dari Awal">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19" />
             </svg>
           </button>
         </header>
@@ -357,7 +359,7 @@
             <span class="b-text">BANTUAN</span>
           </button>
 
-          <button class="pastel-booster-btn shuffle-btn" id="btn-shuffle" title="Acak Posisi Ubin">
+          <button class="pastel-booster-btn shuffle-btn" id="btn-shuffle" title="Acak Posisi">
             <span class="badge" id="shuffle-count">3</span>
             <span class="b-icon">🔀</span>
             <span class="b-text">ACAK</span>
@@ -549,7 +551,7 @@
       </div>
 
       <h2 class="modal-title" style="color: var(--mint-dark); font-size: 1.7rem;">HEBAT BANGET! 🎉</h2>
-      <p class="modal-subtitle">Misi selesai! Semua ubin terhubung!</p>
+      <p class="modal-subtitle">Misi selesai!</p>
 
       <div class="star-rating" id="win-stars">
         <span class="star">★</span>
@@ -580,10 +582,10 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/onet-engine.js?v=4.0"></script>
-  <script src="js/icons.js?v=4.0"></script>
-  <script src="js/audio.js?v=4.0"></script>
-  <script src="js/app.js?v=4.0"></script>
+  <script src="js/onet-engine.js?v=4.1"></script>
+  <script src="js/icons.js?v=4.1"></script>
+  <script src="js/audio.js?v=4.1"></script>
+  <script src="js/app.js?v=4.1"></script>
 </body>
 
 </html>

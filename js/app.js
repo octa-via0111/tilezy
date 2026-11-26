@@ -6,34 +6,101 @@
  */
 
 (() => {
-  // Difficulty Configurations (NO TIMER, NO GRAVITY - tiles stay in place!)
+  // Difficulty Configurations Baseline
   const DIFFICULTY_CONFIG = {
-    easy: {
-      name: 'Mudah',
-      rows: 6,
-      cols: 6,
-      types: 8,
-      time: 300
-    },
-    medium: {
-      name: 'Sedang',
-      rows: 8,
-      cols: 8,
-      types: 12,
-      time: 360
-    },
-    hard: {
-      name: 'Sulit',
-      rows: 8,
-      cols: 12,
-      types: 16,
-      time: 420
-    }
+    easy: { name: 'Mudah' },
+    medium: { name: 'Sedang' },
+    hard: { name: 'Sulit' }
   };
+
+  // Helper Level per Tingkat Kesulitan
+  function getLevelForDifficulty(diff) {
+    try {
+      const saved = localStorage.getItem(`tilezy_level_${diff}`);
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 1) return parsed;
+      }
+    } catch (e) { }
+    return 1;
+  }
+
+  function setLevelForDifficulty(diff, lvl) {
+    try {
+      localStorage.setItem(`tilezy_level_${diff}`, String(Math.max(1, lvl)));
+    } catch (e) { }
+  }
+
+  // Progressive Level Scaling: Setiap naik level, game bertambah sulit!
+  // (Papan bertambah luas, jenis ikon bertambah banyak, dan timer semakin menantang)
+  function getLevelConfig(difficulty, level, isPortrait = true) {
+    const lvl = Math.max(1, parseInt(level, 10) || 1);
+    let r = 6;
+    let c = 6;
+    let types = 8;
+    let time = 300;
+
+    if (difficulty === 'easy') {
+      // MUDAH: Bertahap dari pemula santai hingga cukup menantang
+      if (lvl === 1) {
+        r = 4; c = 6; types = 6; time = 300; // 24 ubin (Level perkenalan mudah)
+      } else if (lvl === 2) {
+        r = 6; c = 6; types = 8; time = 280; // 36 ubin
+      } else if (lvl === 3) {
+        r = 7; c = 6; types = 9; time = 260; // 42 ubin
+      } else if (lvl === 4) {
+        r = 8; c = 6; types = 10; time = 240; // 48 ubin
+      } else {
+        r = 8; c = 6; // 48 ubin
+        types = Math.min(12, 10 + Math.floor((lvl - 4) / 2));
+        time = Math.max(150, 240 - (lvl - 4) * 10);
+      }
+    } else if (difficulty === 'medium') {
+      // SEDANG: Menengah, semakin luas dan jenis ubin semakin bervariasi
+      if (lvl === 1) {
+        r = 8; c = 6; types = 10; time = 300; // 48 ubin
+      } else if (lvl === 2) {
+        r = 8; c = 7; types = 11; time = 280; // 56 ubin
+      } else if (lvl === 3) {
+        r = 8; c = 8; types = 12; time = 260; // 64 ubin
+      } else if (lvl === 4) {
+        r = 9; c = 8; types = 13; time = 240; // 72 ubin
+      } else if (lvl === 5) {
+        r = 10; c = 8; types = 14; time = 220; // 80 ubin
+      } else {
+        r = 10; c = 8; // 80 ubin
+        types = Math.min(16, 14 + Math.floor((lvl - 5) / 2));
+        time = Math.max(120, 220 - (lvl - 5) * 10);
+      }
+    } else {
+      // SULIT: Menantang, papan besar dengan 14-16 variasi ikon
+      if (lvl === 1) {
+        r = 8; c = 8; types = 14; time = 330; // 64 ubin
+      } else if (lvl === 2) {
+        r = 10; c = 8; types = 15; time = 300; // 80 ubin
+      } else if (lvl === 3) {
+        r = 12; c = 8; types = 16; time = 280; // 96 ubin (semua variasi ikon tema)
+      } else if (lvl === 4) {
+        r = 12; c = 8; types = 16; time = 250; // 96 ubin
+      } else {
+        r = 12; c = 8; types = 16;
+        time = Math.max(120, 250 - (lvl - 4) * 15);
+      }
+    }
+
+    // Orientasi: Di layar landscape (PC / tablet mendatar), balik r & c agar lebar horizontal
+    if (!isPortrait && r > c) {
+      const temp = r;
+      r = c;
+      c = temp;
+    }
+
+    return { rows: r, cols: c, types: types, time: time };
+  }
 
   // State
   let currentDifficulty = localStorage.getItem('tilezy_diff') || 'easy';
-  let currentLevel = 1;
+  let currentLevel = getLevelForDifficulty(currentDifficulty);
   let totalScore = parseInt(localStorage.getItem('tilezy_score') || '0', 10);
   let bestScores = {
     easy: parseInt(localStorage.getItem('tilezy_best_easy') || '0', 10),
@@ -252,6 +319,9 @@
     localStorage.removeItem('tilezy_best_easy');
     localStorage.removeItem('tilezy_best_medium');
     localStorage.removeItem('tilezy_best_hard');
+    localStorage.removeItem('tilezy_level_easy');
+    localStorage.removeItem('tilezy_level_medium');
+    localStorage.removeItem('tilezy_level_hard');
     localStorage.removeItem('tilezy_hint_count');
     localStorage.removeItem('tilezy_shuffle_count');
     localStorage.removeItem('tilezy_magic_count');
@@ -264,6 +334,7 @@
 
     updateBestScoresDisplay();
     updateBoosterBadges();
+    updateDifficultyUI();
 
     if (notify) {
       alert('Progres permainan berhasil direset ke Level 1!');
@@ -302,17 +373,28 @@
     applyDarkMode(!isDarkMode);
   }
 
-  // Difficulty Selector Setup
-  function setupDifficultySelector() {
+  // Difficulty Selector Setup & Level Indicator
+  function updateDifficultyUI() {
     diffPills.forEach(pill => {
       pill.classList.toggle('active', pill.dataset.diff === currentDifficulty);
+    });
+    const diffLabel = document.getElementById('diff-label');
+    if (diffLabel) {
+      const diffName = currentDifficulty === 'easy' ? 'Mudah' : (currentDifficulty === 'medium' ? 'Sedang' : 'Sulit');
+      diffLabel.innerHTML = `Tingkat Kesulitan: <strong>${diffName} (Level ${currentLevel})</strong>`;
+    }
+  }
 
+  function setupDifficultySelector() {
+    updateDifficultyUI();
+
+    diffPills.forEach(pill => {
       pill.addEventListener('click', () => {
         soundController.playClick();
-        diffPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
         currentDifficulty = pill.dataset.diff;
         localStorage.setItem('tilezy_diff', currentDifficulty);
+        currentLevel = getLevelForDifficulty(currentDifficulty);
+        updateDifficultyUI();
       });
     });
   }
@@ -376,6 +458,7 @@
       if (viewHome) viewHome.classList.add('active');
       updateBestScoresDisplay();
       updateUsernameDisplay();
+      updateDifficultyUI();
       setActiveTab(tabHome);
       showInstallBanner();
       if (updateHistory && window.location.hash) {
@@ -841,30 +924,23 @@
 
   // Start round
   function startRound(forceNew = false) {
-    const cfg = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+    const isPortrait = boardArea ? (boardArea.clientHeight >= boardArea.clientWidth) : (window.innerHeight > window.innerWidth);
     const saved = !forceNew ? getSavedGameState() : null;
 
     if (saved && saved.board && Array.isArray(saved.board)) {
       // Pulihkan langkah terakhir yang tersimpan persis di mana pemain berhenti!
-      engine = new OnetEngine(saved.rows, saved.cols, saved.numTypes || 16, 'none');
-      engine.board = saved.board;
       currentLevel = saved.level || currentLevel;
+      const cfg = getLevelConfig(currentDifficulty, currentLevel, isPortrait);
+      engine = new OnetEngine(saved.rows, saved.cols, saved.numTypes || cfg.types, 'none');
+      engine.board = saved.board;
       currentLevelScore = saved.levelScore || 0;
       maxTime = saved.maxTime || cfg.time || 300;
       remainingTime = (typeof saved.remainingTime === 'number' && saved.remainingTime > 0) ? saved.remainingTime : maxTime;
     } else {
-      let r = cfg.rows;
-      let c = cfg.cols;
+      currentLevel = getLevelForDifficulty(currentDifficulty);
+      const cfg = getLevelConfig(currentDifficulty, currentLevel, isPortrait);
 
-      // Adaptasi mode Sulit: 8 kolom x 12 baris di layar potret HP (96 ubin)
-      // agar pas dan tidak terpotong ke samping di layar ponsel sempit
-      const isPortrait = boardArea ? (boardArea.clientHeight >= boardArea.clientWidth) : (window.innerHeight > window.innerWidth);
-      if (currentDifficulty === 'hard') {
-        r = isPortrait ? 12 : 8;
-        c = isPortrait ? 8 : 12;
-      }
-
-      engine = new OnetEngine(r, c, cfg.types, 'none');
+      engine = new OnetEngine(cfg.rows, cfg.cols, cfg.types, 'none');
       currentLevelScore = 0;
       maxTime = cfg.time || 300;
       remainingTime = maxTime;
@@ -1335,6 +1411,11 @@
       winTitle.textContent = playerUsername ? `HEBAT, ${playerUsername}! 🎉` : 'HEBAT BANGET! 🎉';
     }
 
+    const btnWinNext = document.getElementById('btn-win-next');
+    if (btnWinNext) {
+      btnWinNext.textContent = `Lanjut Level ${currentLevel + 1} ▶`;
+    }
+
     modalWin.classList.add('active');
   }
 
@@ -1676,7 +1757,7 @@
     if (btnGameReload) {
       btnGameReload.addEventListener('click', () => {
         soundController.playClick();
-        if (confirm('Mulai ulang level ini dari awal?')) {
+        if (confirm(`Mulai ulang Level ${currentLevel} dari awal?`)) {
           stopTimer();
           clearSavedGameState();
           startRound(true);
@@ -1753,6 +1834,7 @@
       modalWin.classList.remove('active');
       clearSavedGameState();
       currentLevel++;
+      setLevelForDifficulty(currentDifficulty, currentLevel);
       startRound(true);
     });
   }
@@ -1815,10 +1897,10 @@
       });
 
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=4.0')
+        navigator.serviceWorker.register('sw.js?v=4.1')
           .then(reg => {
             reg.update();
-            console.log('Tilezy PWA Ready v4.0 (100% Offline)!');
+            console.log('Tilezy PWA Ready v4.1 (100% Offline)!');
           })
           .catch(err => console.log('SW error:', err));
       });
